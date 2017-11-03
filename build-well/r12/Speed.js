@@ -1,119 +1,135 @@
-class Shape{
-  constructor(a){
-    
-    // check for required arguments
-    ['area','floors'].map(k=>{
-      if(!a[k]){
-        throw new Error(`missing required value for ${k}`)
-      }
-    })
-    
-    // set required parameters
-    this.area = a.area
-    this.floors = a.floors
-    
-    // build params from optional args
-    this.xM     = a.xM     || 1
-    this.xMinM  = a.xMinM  || this.xM
-    this.xMaxM  = a.xMaxM  || this.xM
-    this.xMinC  = a.xMinC  || 2/3
-    this.xMaxC  = a.xMaxC  || 2
-    this.yM     = a.yM     || this.xM
-    this.yMaxC1 = a.yMaxC1 || this.yM
-    this.yMaxC2 = a.yMaxC2 || this.yM
-    this.kM     = a.kM     || 1
-  }
-  A(){
-    return this.area * this.floors
-  }
-  x(){
-    return Math.pow( this.A() * this.xM, 0.5 )
-  }
-  xMin(){
-    return this.xMinC * Math.pow( this.A() * this.xM, 0.5)
-  }
-  xMax(){
-    return this.xMaxC * Math.pow( this.A() * this.xM, 0.5)
-  }
-  y(){
-    return Math.pow( this.A() * this.yM, 0.5 )
-  }
-  yMin(){
-    this.A() / this.x()
-  }
-  yMax(){
-    return this.yMaxC1 * (this.A() / this.x()) + this.yMaxC2 * this.x()
-  }
-  xRange(){
-    return [this.xMin,this.xMax]
-  }
-  yRange(){
-    return [this.yMin(),this.yMax()]
-  }
-  k(){
-    let x = this.x()
-    let y = this.y()
-    let A = this.A()
-    let m = this.kM
-    return (x + (m*y))/(m*2) - Math.pow(Math.pow((x + (m*y))/(m*2),2) - (A/m),0.5)
-  }
-}
+let Speed = (()=>{
 
-class LShape extends Shape{
-  constructor(args){
-    super({
-      ...args,
-      xM     : 1.8,
-      yMaxC1 : 10,
-      xMaxC2 : -0.9,
-    })
+  class Shape{
+    constructor( args ){
+      
+      // check for required arguments
+      ['area','floors'].map( key => {
+        if( !args[key] ){
+          throw new Error(`missing required value for ${k}`)
+        }
+      })
+      
+      // set required parameters
+      this.area   = args.area
+      this.floors = args.floors
+      
+      // build params from optional args
+      this.lengthMult = args.lengthMult || 1
+      this.lengthMinM = args.lengthMinM || this.lengthMult
+      this.lengthMaxM = args.lengthMaxM || this.lengthMult
+      this.lengthMinC = args.lengthMinC || 2/3
+      this.lengthMaxC = args.lengthMaxC || 2
+      this.widthMult  = args.widthMult  || this.lengthMult
+      this.widthMaxC1 = args.widthMaxC1 || this.widthMult
+      this.widthMaxC2 = args.widthMaxC2 || this.widthMult
+      this.thickMult  = args.thickMult  || 1
+    }
+    areaTotal(){
+      return this.area * this.floors
+    }
+    length(){
+      return Math.pow( this.areaTotal() * this.lengthMult, 0.5 )
+    }
+    lengthMin(){
+      return this.lengthMinC * Math.pow( this.areaTotal() * this.lengthMult, 0.5)
+    }
+    lengthMax(){
+      return this.lengthMaxC * Math.pow( this.areaTotal() * this.lengthMult, 0.5)
+    }
+    width(){
+      return Math.pow( this.areaTotal() * this.widthMult, 0.5 )
+    }
+    widthMin(){
+      return this.areaTotal() / this.length()
+    }
+    widthMax(){
+      return this.widthMaxC1 * (this.areaTotal() / this.length()) + this.widthMaxC2 * this.length()
+    }
+    lengthRange(){
+      return [this.lengthMin(),this.lengthMax()]
+    }
+    widthRange(){
+      return [this.widthMin(),this.widthMax()]
+    }
+    thickness(args={}){
+      let x = args.length || this.length()
+      let y = args.width  || this.width()
+      let A = this.areaTotal()
+      let m = this.thickMult
+      return (x + (m*y))/(m*2) - Math.pow(Math.pow((x + (m*y))/(m*2),2) - (A/m),0.5)
+    }
   }
-}
 
-class HShape extends Shape{
-  constructor(args){
-    super({
-      ...args,
-      xM     : 9/7,
-      yMaxC1 : 5,
-      yMaxC2 : -0.4,
-      kM     : 2,
-    })
+  class LShape extends Shape{
+    constructor(args){
+      super({
+        ...args,
+        lengthMult  : 1.8,
+        widthMaxC1  : 10,
+        lengthMaxC2 : -0.9,
+      })
+    }
   }
-}
 
-class TShape extends Shape{
-  constructor(args){
-    super({
-      ...args,
-      xM     : 1.8,
-      yMaxC1 : 10,
-      yMaxC2 : -0.4,
-    })
-    
+  class HShape extends Shape{
+    constructor(args){
+      super({
+        ...args,
+        lengthMult : 9/7,
+        widthMaxC1 : 5,
+        widthMaxC2 : -0.4,
+        thickMult  : 2,
+      })
+    }
   }
-}
 
-class BoxShape extends Shape{
-  constructor(args){
-    super({
-      ...args,
-      xMinC : 1,
-      xMaxC : 1,
-      xM    : 1,
-      xMinM : 1/10,
-      xMaxM : 10,
-    })
-    
+  class TShape extends Shape{
+    constructor(args){
+      super({
+        ...args,
+        lengthMult : 1.8,
+        widthMaxC1 : 10,
+        widthMaxC2 : -0.4,
+      })
+      
+    }
   }
-  y(){
-    return this.A() / this.x()
-  }
-}
 
-class Speed{
-  constructor(){}
-  windowVertices(length,height,wwr,windowCount,horizontality=0.5){
+  class BoxShape extends Shape{
+    constructor(args){
+      super({
+        ...args,
+        lengthMinC : 1,
+        lengthMaxC : 1,
+        lengthMult : 1,
+        lengthMinM : 1/10,
+        lengthMaxM : 10,
+      })
+      
+    }
+    width(){
+      return this.areaTotal() / this.length()
+    }
+  }
+
+  this.createBoxShape = function(args){
+    return new BoxShape(args)
+  }
+  
+  this.createHShape = function(args){
+    return new HShape(args)
+  }
+
+  this.createLShape = function(args){
+    return new LShape(args)
+  }
+
+  this.createTShape = function(args){
+    return new TShape(args)
+  }
+
+  this.windowVertices = function(length,height,wwr,windowCount,horizontality=0.5){
     return this.facadeToWindows(length,height,wwr,windowCount,horizontality).map( window => {
       // Loop through each window
       return window.map( point => {
@@ -123,9 +139,10 @@ class Speed{
       })
     })
   }
+  
   // this function creates the window geometry using the library Andrew created with no geometry dependencies
   // The library is under Geom.js
-  facadeToWindows(wallWidth,floor2floor,wwr,windowCount,horizontality){
+  this.facadeToWindows = function(wallWidth,floor2floor,wwr,windowCount,horizontality){
     let wall = Geom.xzRectangle(wallWidth,floor2floor)
     let segments = Geom.segmentsFromPoly(wall)
     return Geom.divideSegment(segments[3],windowCount).map( segment => {
@@ -142,4 +159,5 @@ class Speed{
       return Geom.xzRectangle(windowWidth,windowHeight,windowOrigin)
     })
   }
-}
+  return this
+})
