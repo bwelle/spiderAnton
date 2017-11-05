@@ -1,8 +1,8 @@
 <span style=display:none; >[You are now in a GitHub source code view - click this link to view Read Me file as a web page]( http://ladybug-tools.github.io/spider/#build-well/README.md "View file as a web page." ) </span>
 
 
-[Build Well Read Me]( #README.md )
-====
+# [Build Well Read Me]( #README.md )
+
 _A well for building well._
 
 <iframe class=iframeReadMe src=http://ladybug-tools.github.io/spider/build-well/dev/index.html width=100% height=600px ></iframe>
@@ -55,7 +55,7 @@ _We often think of software of software just appearing as if by magic. The reali
 ## Current Issues
 
 
-* 2017-11-01 ~ Internal and externals wall need to switch positions
+
 * 2017-11-01 ~ gbXML export needs fixes to compensate for changes to space ordering and perimeter depth
 * 2017-10-30 ~ No vertical spacing as default on gbXML export
 * 2017-10-30 ~ Need accurate area and volume calculations for spaces and building
@@ -132,6 +132,7 @@ See [Single Model Multiple Menus]( https://ladybug-tools.github.io/spider/#sandb
 
 ### mnu-gbxml-export.html
 
+* 2017-11-01 ~ Add check if distance between vertices is too small for the perimeter depth
 * 2017-10-05 ~ Export fin data
 
 
@@ -148,6 +149,12 @@ See [Single Model Multiple Menus]( https://ladybug-tools.github.io/spider/#sandb
 
 
 ## Change Log
+
+
+
+### 2017-11-01 ~ Theo
+
+* 2017-11-01 ~ Internal and externals wall need to switch positions
 
 ### 2017-10-31 ~ Theo
 
@@ -592,7 +599,7 @@ abbreviations relate to names of HTML files; ab = adjacent-buildings.html
 ### 2017-09-20 ~ Theo
 
 * 14:56 ~  Start R2
-* Reobject in 'everything is a recipe' style. Using mnu-template & test-threejs basic
+* Re object in 'everything is a recipe' style. Using mnu-template & test-threejs basic
 * 16:15 ~ 'Site Context' looking good
 * 17:47 ~ adjacent buildings.html looking good
 * 22:23 ~ Geometry.html is working

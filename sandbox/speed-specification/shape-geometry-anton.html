@@ -10,9 +10,6 @@
 <style>
 
 	body { font: 12pt monospace; margin: 0 auto; max-width: 800px; }
-	a { color: crimson; text-decoration: none; }
-	a:hover, a:focus { background-color: yellow; color: #aaa; text-decoration: underline }
-
 	canvas { border: 1px solid black; }
 	select { width: 150px; }
 	table { border-spacing: 20px; width: 100%; }
@@ -39,52 +36,55 @@
 <body>
 <script src = "https://cdn.rawgit.com/mrdoob/three.js/r87/build/three.min.js" ></script>
 <script src = "https://cdn.rawgit.com/mrdoob/three.js/r87/examples/js/controls/OrbitControls.js" ></script>
-<script src = "https://cdn.rawgit.com/spite/THREE.MeshLine/master/src/THREE.MeshLine.js" ></script>
+<script src = "./speedjs/Speed.js" ></script>
 
 	<div id = "header" >
-
-		<h1 id = "title" >
-
-			<a href="./index.html" target=_top >&#x2302;</a> &raquo;
-			<a href="" >Site Content</a>
-			<a href=https://github.com/ladybug-tools/spider/blob/master/sandbox/speed-specification/envelope.html target="_top"><img src="https://status.github.com/images/invertocat.png" height=25 ></a>
-
-		</h1>
-
-		<h2>Envelope 1.0 </h2>
+		<h1 id = "title" ><a href="" >Site Content</a></h1>
+		<h2>Geometry 1.0 </h2>
 	</div>
 
 	<div id = "divInput" >
 
 		<table>
 			<tr>
-				<td>building wwr</td><td>window preportions</td><td>wwrs</td><td>wwre</td><td>wwrw</td><td>wwrn</td><td># of Windows</td><td>Overhang Depth</td><td>Fin Depth</td>
+				<td>Building Area</td><td># of Floors</td><td>Floor Area</td><td>Floor Height</td><td># of Footprint Shapes</td>
 			</tr>
 
 			<tr>
-				<td><input type=number id=wwr oninput=updateShape(this);></td>
-				<td><input type=number id=windowPreportions oninput=updateShape(this);></td>
-				<td><input type=number id=wwrs oninput=updateShape(this);></td>
-				<td><input type=number id=wwre oninput=updateShape(this);></td>
-				<td><input type=number id=wwrw oninput=updateShape(this);></td>
-				<td><input type=number id=wwrn oninput=updateShape(this);></td>
-				<td><input type=number id=numWindows oninput=updateShape(this);></td>
-				<td><input type=number id=overhangDepth oninput=updateShape(this);></td>
-				<td><input type=number id=finDepth oninput=updateShape(this);></td>
+				<td><input id=inpArea ></td>
+				<td><input type=number id=inpFloors oninput=updateShape(this);></td>
+				<td><input type=number id=inpFloorArea ></td>
+				<td><input type=number id=inpHeight oninput=updateShape(this); ></td>
+				<td><input type=number id=inpShapeCount ></td>
 			</tr>
 
 		</table>
 
 		<table>
 			<tr>
-				<td>Window Type</td>
+				<td>Footprint Shape</td><td>Massing Generator</td><td>Perimeter Depth</td><td>Orientation</td>
 			</tr>
 
 			<tr>
-				<td><select id=selWindow ></select></td>
+				<!-- Dropdown menu on change: https://stackoverflow.com/questions/26709969/call-javascript-function-onchange-event-of-dropdown-list -->
+				<td><select id=selShape onmousedown="this.value='';" onchange="addAssets(this.value);">
+				</select></td><td><select id=selMassing ></select></td><td><input type=number id=inpPerimeterDepth ></td><td><input type=number id=inpOrientation oninput=updateShape(this); ></td>
 			</tr>
 
 		</table>
+
+		<div id=divDimensions >
+			<div>Footprint dimensions</div>
+			<div>Length <output id=outLength class=floatright >50</output>
+				<input type=range id=inpLength oninput=updateShape(this);outLength.value=this.value; ></div>
+
+			<div>Width  <output id=outWidth class=floatright >50</output>
+				<input type=range id=inpWidth oninput=updateShape(this);outWidth.value=this.value; ></div>
+
+			<div>Thickness <input type=number id=inpThickness ></div>
+
+		</div>
+
 	</div>
 
 	<canvas id="canvasPerspective" height=300 width=300 ></canvas>
@@ -97,12 +97,16 @@
 	let gridHelper, axesHelper;
 	var renderer, camera, controls, scene;
 
+	var speed;
+
 	var lightAmbient, lightDirectional, cameraHelper, axisHelper;
 
 
 	init();
 
 	function init() {
+
+		speed = Speed();
 
 		getInputFields();
 
@@ -114,39 +118,39 @@
 
 	function getInputFields(){
 
-		wwr.min = 1;
-		wwr.max = 100;
-		wwr.value = 40;
+		inpArea.value = 5000;
 
-		wwrs.min = 1;
-		wwrs.max = 100;
-		wwrs.value = 40;
+		inpFloors.min = 1;
+		inpFloors.max = 20;
+		inpFloors.value = 2;
 
-		wwre.min = 1;
-		wwre.max = 100;
-		wwre.value = 40;
+		inpHeight.min = 8;
+		inpHeight.max = 20;
+		inpHeight.value = 10;
 
-		wwrw.min = 1;
-		wwrw.max = 100;
-		wwrw.value = 40;
+		inpShapeCount.min = 1;
+		inpShapeCount.max = 10;
+		inpShapeCount.value = 3;
 
-		wwrn.min = 1;
-		wwrn.max = 100;
-		wwrn.value = 40;
-
-		windowPreportions.min = 0;
-		windowPreportions.max = 1;
-		windowPreportions.value = 0.4;
-
-		numWindows.min = 1;
-		numWindows.max = 10;
-		numWindows.value = 3;
-
-		selWindow.innerHTML =
-			'<option>Window Type 1</option>' +
-			'<option>Window Type 2</option>' +
-			'<option>Window Type 3</option>' +
+		selShape.innerHTML =
+			'<option>L-Shape</option>' +
+			'<option>Box-Shape</option>' +
+			'<option>T-Shape</option>' +
 		'';
+
+		selMassing.innerHTML =
+			'<option>Generator 1</option>' +
+			'<option>Generator 2</option>' +
+			'<option>Generator 3</option>' +
+		'';
+
+		inpPerimeterDepth.min = 10;
+		inpPerimeterDepth.max = 20;
+		inpPerimeterDepth.value = 10;
+
+		inpOrientation.min = -90;
+		inpOrientation.max = 90;
+		inpOrientation.value = 0;
 
 	}
 
@@ -194,10 +198,13 @@
 
 		addHelpers();
 
-		addAssets();
+		// Get shape type value
+		var e = document.getElementById("selShape")
+		var shapeType = e.options[e.selectedIndex].text;
+
+		addAssets(shapeType);
 
 	}
-
 
 
 	function addHelpers( size = 200 ) {
@@ -207,71 +214,73 @@
 		gridHelper = new THREE.GridHelper( size, size / 10 );
 		gridHelper.rotation.x = 0.5 * Math.PI;
 
-		function makeAxes(){
+		axisHelper = new THREE.AxisHelper( size * 0.05 );
+		axisHelper.position.set( -0.5 * size, -0.5 * size, 15 );
+		axisHelper.material.linewidth = 20;
 
-			// This function makes a thick axis - as Ben requested
-			var graph = new THREE.Object3D();
-			//var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
-			var resolution = new THREE.Vector2( 100, 50 );
+		scene.add( gridHelper, axisHelper );
 
-			function makeLine( geo,color) {
-
-				var g = new MeshLine();
-				g.setGeometry( geo );
-
-				var material = new MeshLineMaterial( {
-					useMap: false,
-					color: new THREE.Color(color),
-					opacity: 1,
-					resolution: resolution,
-					sizeAttenuation: !false,
-					lineWidth: 0.025
-				});
-				var mesh = new THREE.Mesh( g.geometry, material );
-				mesh.position.set( 0,0,0);
-				graph.add( mesh );
-			}
-			// X axis
-			var line = new THREE.Geometry();
-			line.vertices.push( new THREE.Vector3( -30, -30, -30 ) );
-			line.vertices.push( new THREE.Vector3( 30, -30, -30 ) );
-			makeLine( line, 0x009500 );
-			// Y axis
-			var line = new THREE.Geometry();
-			line.vertices.push( new THREE.Vector3(  -30, -30, -30 ) );
-			line.vertices.push( new THREE.Vector3( -30, 30, -30 ) );
-			makeLine( line, 0x0000ff );
-			// Z axis
-			var line = new THREE.Geometry();
-			line.vertices.push( new THREE.Vector3( -30, -30, -30 ) );
-			line.vertices.push( new THREE.Vector3( -30, -30, 30 ) );
-			makeLine( line, 0xff0000 );
-
-			return graph
-
-		}
-		// Thick axis helper
-		axesHelper = makeAxes()
-		scene.add(axesHelper)
-		scene.add(gridHelper);
 	}
 
-
-	function addAssets() {
+	function addAssets(shapeType) {
 
 		let geometry, material, mesh;
 
-			mesh = createMesh();
-			mesh.name = 'Box-Shape';
+			if (shapeType == 'Box-Shape')
+			{
+				mesh = createBoxShape();
+				mesh.name = 'Box-Shape';
+			}
+			else if (shapeType == 'L-Shape')
+			{
+				mesh = createLShape();
+				mesh.name = 'L-Shape';
+			}
+			else if (shapeType == 'T-Shape')
+			{
+				mesh = createTshape()
+				mesh.name = 'T-Shape';
+			}
+			else {
+				throw "Input of shape type not correct!!"
+			}
 			mesh.scale.set( 50, 50, 20 );
 			mesh.position.z = mesh.scale.z * 0.5;
-			scene.add( mesh );
 
+			scene.add( mesh );
+	}
+
+	function createBoxShape() {
+
+		const geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+		const material = new THREE.MeshPhongMaterial();
+		const mesh = new THREE.Mesh( geometry, material );
+		const edgesGeometry = new THREE.EdgesGeometry( geometry );
+		const meshEdges = new THREE.LineSegments( edgesGeometry, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+		mesh.add( meshEdges );
+
+		return mesh;
 
 	}
 
+	function createLShape() {
 
-	function createMesh() {
+		shape = speed.createLShape({area:600,floors:3})
+		console.log(shape)
+
+
+
+		const material = new THREE.MeshPhongMaterial();
+		const mesh = new THREE.Mesh( geometry, material );
+		const edgesGeometry = new THREE.EdgesGeometry( geometry );
+		const meshEdges = new THREE.LineSegments( edgesGeometry, new THREE.LineBasicMaterial( { color: 0x000000 } ) );
+		mesh.add( meshEdges );
+
+		return mesh;
+
+	}
+
+	function createTshape() {
 
 		const geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
 		const material = new THREE.MeshPhongMaterial();

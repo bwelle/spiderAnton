@@ -6,7 +6,7 @@
 <meta name="viewport" content = "width=device-width,user-scalable=no,minimum-scale=1.0,maximum-scale=1.0" >
 <meta name=description content="Build Well Three.js qLine 'server' - designed to be accessed inside an iframe" >
 <meta name=keywords content="Three.js,WebGL,JavaScript,GitHub,FOSS,3D,STEM" >
-<meta name="date" content="2017-11-01 ~ " >
+<meta name="date" content="2017-10-25" >
 <title>Build Well Three.js</title>
 <style>
 
@@ -29,7 +29,6 @@
 <body>
 <script src = "https://cdn.rawgit.com/mrdoob/three.js/dev/build/three.min.js" ></script>
 <script src = "https://cdn.rawgit.com/mrdoob/three.js/dev/examples/js/controls/OrbitControls.js" ></script>
-<script src="./THREE.MeshLine.js"></script>
 
 	<div id = "divMenu" >
 
@@ -264,7 +263,6 @@
 		campus.section = updateSection();
 		campus.paths = updatePaths();
 
-
 		let index = 0;
 
 		for ( let i = 0; i < 3; i++ ) {
@@ -300,7 +298,7 @@
 
 		}
 
-		//console.log( 'buildings', buildings );
+//console.log( 'buildings', buildings );
 
 		scene.add( buildings );
 
@@ -335,14 +333,26 @@
 		const len34 = 3 * len / 4;
 
 		const wid = campus.width1;
+//console.log( 'width1', wid );
 		const wid13 = wid / 3;
 		const wid23 = 2 * wid / 3;
 
 		var paths = {};
 
+//		const pathBox = [ v2( 0, 0 ), v2( len, 0 ), v2( len, wid ), v2( 0, wid ), v2( 0, 0 ) ];
 		const pathBox = [ v2( len, 0 ), v2( 0, 0 ), v2( 0, wid ), v2( len, wid ), v2( len, 0 ) ];
 		paths.pathBox = pathBox; // scaleMesh( pathBox, pLogBox, 'Box shape' );
 
+/*		const pathL = [
+			v2( 0, 0 ),
+			v2( len, 0 ),
+			v2( len, wid13 ),
+			v2( len13, wid13 ),
+			v2( len13, wid ),
+			v2( 0, wid ),
+			v2( 0, 0 )
+		];
+*/
 		const pathL = [
 			v2( len, 0 ),
 			v2( 0, 0 ),
@@ -353,6 +363,19 @@
 			v2( len, 0 )
 		];
 		paths.pathL = pathL; //scaleMesh( pathL, pLogL, 'L shape' );
+
+/*		const pathT = [
+			v2( 0, 0 ),
+			v2( len, 0 ),
+			v2( len, wid13 ),
+			v2( len23, wid13 ),
+			v2( len23, wid ),
+			v2( len13, wid ),
+			v2( len13, wid13 ),
+			v2( 0, wid13 ),
+			v2( 0, 0 ),
+		];
+*/
 
 		const pathT = [
 			v2( len, 0 ),
@@ -366,6 +389,22 @@
 			v2( len, 0 )
 		];
 		paths.pathT = pathT; // scaleMesh( pathT, pLogT, 'T shape' );
+
+/*		const pathH = [
+			v2( 0, 0 ),
+			v2( len14, 0 ),
+			v2( len14, wid13 ),
+			v2( len34, wid13 ),
+			v2( len34, 0 ),
+			v2( len, 0 ),
+			v2( len, wid ),
+			v2( len34, wid ),
+			v2( len34, wid23 ),
+			v2( len14, wid23 ),
+			v2( len14, wid ),
+			v2( 0, wid ),
+			v2( 0, 0 )
+		]; */
 
 		const pathH = [
 			v2( len34, wid13 ),
@@ -453,7 +492,7 @@
 
 
 	function scaleMesh( path, log, text ) {
-		// console.log( '', path, log, text );
+// console.log( '', path, log, text );
 
 		const shape = new THREE.Shape( path );
 		const geometry = new THREE.ShapeGeometry( shape );
@@ -711,6 +750,8 @@
 
 	}
 
+
+
 	function addHelpers( size = 100 ) {
 
 		scene.remove( cameraHelper, gridHelper, axesHelper, avatar );
@@ -720,50 +761,11 @@
 		gridHelper = new THREE.GridHelper( size, size / 10 );
 		gridHelper.rotation.x = 0.5 * Math.PI;
 
-		function makeAxes(){
-			// This function makes a thick axis - as Ben requested
-			var graph = new THREE.Object3D();
-			var resolution = new THREE.Vector2( window.innerWidth, window.innerHeight );
-
-			function makeLine( geo,color) {
-
-				var g = new MeshLine();
-				g.setGeometry( geo );
-
-				var material = new MeshLineMaterial( {
-					useMap: false,
-					color: new THREE.Color(color),
-					opacity: 1,
-					resolution: resolution,
-					sizeAttenuation: !false,
-					lineWidth: 1.5,
-					near: camera.near,
-					far: camera.far
-				});
-				var mesh = new THREE.Mesh( g.geometry, material );
-				mesh.position.set( 0,0,0);
-				graph.add( mesh );
-			}
-			// X axis
-			var line = new THREE.Geometry();
-			line.vertices.push( new THREE.Vector3( -30, -30, -30 ) );
-			line.vertices.push( new THREE.Vector3( 30, -30, -30 ) );
-			makeLine( line, 0x009500 );
-			// Y axis
-			var line = new THREE.Geometry();
-			line.vertices.push( new THREE.Vector3(  -30, -30, -30 ) );
-			line.vertices.push( new THREE.Vector3( -30, 30, -30 ) );
-			makeLine( line, 0x0000ff );
-			// Z axis
-			var line = new THREE.Geometry();
-			line.vertices.push( new THREE.Vector3( -30, -30, -30 ) );
-			line.vertices.push( new THREE.Vector3( -30, -30, 30 ) );
-			makeLine( line, 0xff0000 );
-
-			scene.add( graph );
-		}
-
-		makeAxes()
+		axesHelper = new THREE.AxesHelper( size * 0.05 );
+		axesHelper.position.set( -0.5 * size, -0.5 * size, 15 );
+		axesHelper.material.linewidth = 20;
+		axesHelper2 = new THREE.AxesHelper( size );
+		axesHelper2.material.linewidth = 2;
 
 		groundHelper = createMesh();
 		groundHelper.scale.set( size, size, size );
@@ -771,7 +773,7 @@
 		groundHelper.name = 'groundHelper';
 		groundHelper.visible = false;
 
-		scene.add( cameraHelper, gridHelper, groundHelper );
+		scene.add( cameraHelper, gridHelper, axesHelper, axesHelper2, groundHelper );
 
 		const geometry = new THREE.IcosahedronBufferGeometry( 0.01 * size, );
 		const material = new THREE.MeshPhongMaterial( { color: 0xffffff * Math.random(), emissive: 0x555555, shininess: 50 });
@@ -789,6 +791,7 @@
 		avatar.visible = false;
 
 		scene.add( avatar );
+
 
 	}
 
