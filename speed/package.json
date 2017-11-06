@@ -1,0 +1,14 @@
+{
+  "name": "speed",
+  "version": "1.0.0",
+  "description": "package json for speed visualizations and gbxml export",
+  "main": "Geom.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "three": "^0.88.0"
+  }
+}

@@ -37,8 +37,8 @@
 </style>
 </head>
 <body>
-<script src = "https://cdn.rawgit.com/mrdoob/three.js/r88/build/three.min.js" ></script>
-<script src = "https://cdn.rawgit.com/mrdoob/three.js/r88/examples/js/controls/OrbitControls.js" ></script>
+<script src = "http://cdn.rawgit.com/mrdoob/three.js/r88/build/three.min.js" ></script>
+<script src = "http://cdn.rawgit.com/mrdoob/three.js/r88/examples/js/controls/OrbitControls.js" ></script>
 
 	<div id = "header" >
 
@@ -62,8 +62,8 @@
 			</tr>
 
 			<tr>
-				<td><input type=number id=inpArea step=50 onchange=updateShape(); ></td>
-				<td><input type=number id=inpFloors onchange=updateShape();></td>
+				<td><input type=number id=inpArea step=50 onchange=changeBuildingArea(); ></td>
+				<td><input type=number id=inpFloors onchange=changeNumFloors();></td>
 				<td><output type=number id=outFloorArea ></output></td>
 				<td><input type=number id=inpHeight onChange=updateShape(); ></td>
 				<td><input type=number id=inpShapeCount ></td>
@@ -78,7 +78,7 @@
 			</tr>
 
 			<tr>
-				<td><select id=selShape size=4 onchange=updateShape(); ></select></td><td><select id=selMassing ></select></td><td><input type=number id=inpPerimeterDepth ></td><td><input type=number id=inpOrientation oninput=updateShape(this); ></td>
+				<td><select id=selShape size=4 onchange=changeBuildingShape(); ></select></td><td><select id=selMassing ></select></td><td><input type=number id=inpPerimeterDepth ></td><td><input type=number id=inpOrientation oninput=updateShape(this); ></td>
 			</tr>
 
 		</table>
@@ -89,17 +89,16 @@
 
 			<div>
 				Length <output id=outLength class=floatright ></output>
-				<input type=range id=inpLength oninput=updateShape(); >
+				<input type=range id=inpLength oninput=changeLengthSlider(); >
 			</div>
 
 			<div>
 				Width <output id=outWidth class=floatright ></output>
-				<input type=range id=inpWidth oninput=updateShape(); >
+				<input type=range id=inpWidth oninput=changeWidthSlider(); >
 			</div>
 
 			<div id=divThickness >
 				Thickness <output id=outThickness class=floatright ></output>
-				<input type=range id=inpThickness oninput=updateShape(); >
 			</div>
 
 			<div id=divValidation ></div>
@@ -112,8 +111,6 @@
 
 	<canvas id="canvasOrtho"  height=300 width=300 ></canvas>
 
-	
-
 <script>
 
 
@@ -124,11 +121,44 @@
 
 	let lightAmbient, lightDirectional, cameraHelper, axisHelper;
 
+	var previousinpAreaValue,previousinpFloorsValue
+
 	var v = function( x, y, z ){ return new THREE.Vector3( x, y, z ); };
 	var v2 = function( x, y ){ return new THREE.Vector2( x, y ); };
 	var pi = Math.PI;
 	const d2r = pi / 180, r2d = 180 /pi;
 
+	const buildingShapes =
+	{
+		"Lshape":0,
+		"Hshape":1,
+		"Tshape":2,
+		"Boxshape":3
+	};
+
+	/// Helper functions
+
+	function stringOfBuildingShapeToBuildingShapeEnum(selectedShapeType){
+		if (selectedShapeType === "L-Shape")
+		{
+			return buildingShapes.Lshape
+		}
+		else if (selectedShapeType === "H-Shape")
+		{
+			return buildingShapes.Hshape
+		}
+		else if (selectedShapeType === "T-Shape")
+		{
+			return buildingShapes.Tshape
+		}
+		else if (selectedShapeType === "Box-Shape")
+		{
+			return buildingShapes.Boxshape
+		}
+		else {
+			throw new Error('Cannot convert string '+string+ ' to building shape enum!!')
+		}
+	}
 
 	init();
 
@@ -142,30 +172,21 @@
 
 	}
 
-
 	function initInputFields(){
+		/// Assume that we start on L-shape with a building area of 5000 and 1 floor
 
-		theBuilding = {};
-		theBuilding.area = 5000;
-		theBuilding.length = 50;
-		theBuilding.lengthInit = 0;;
-		theBuilding.width = 100;
-		theBuilding.thickness = 20;
-		theBuilding.storeys = 1;
-		theBuilding.storeyHeight = 10;
-		theBuilding.orientation = 0;
-		theBuilding.perimeterDepth = 15;
-
-
-		inpArea.value = theBuilding.area;
+		inpArea.value = 5000;
+		previousinpAreaValue = 5000;
 
 		inpFloors.min = 1;
 		inpFloors.max = 20;
-		inpFloors.value = theBuilding.storeys;
+		inpFloors.value = 1;
+
+		previousinpFloorsValue = 1;
 
 		inpHeight.min = 8;
 		inpHeight.max = 20;
-		inpHeight.value = theBuilding.storeyHeight;
+		inpHeight.value = 10;
 
 		inpShapeCount.min = 1;
 		inpShapeCount.max = 10;
@@ -178,7 +199,7 @@
 			'<option>H-Shape</option>' +
 		'';
 
-		selShape.selectedIndex = 0;
+		selShape.selectedIndex = 1;
 
 		selMassing.innerHTML =
 			'<option>Generator 1</option>' +
@@ -188,28 +209,258 @@
 
 		inpPerimeterDepth.min = 10;
 		inpPerimeterDepth.max = 20;
-		inpPerimeterDepth.value = theBuilding.perimeterDepth;
+		inpPerimeterDepth.value = 3;
 
 		inpOrientation.min = -90;
 		inpOrientation.max = 90;
-		inpOrientation.value = theBuilding.orientation;
 
-		inpLength.min = 1;
-		inpLength.max = 200;
-		inpLength.value = theBuilding.length;
+		//changeBuildingShape(inpArea.value,inpFloors.value,stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 
-		inpWidth.min = 1;
-		inpWidth.max = 300;
-		inpWidth.value = theBuilding.width;
+		}
 
-		inpThickness.min = 1;
-		inpThickness.max = 100;
-		inpThickness.value = theBuilding.thickness;
+		/// Implemented using the table in Geometry Logic map
 
-//console.log( 'theBuilding', theBuilding );
+		function changeBuildingShape(buildingArea = inpArea.value, numFloors = inpFloors.value, buildingShape = selShape.value)
+		{
+			// Set the initials for each building Type
+			floorArea = buildingArea/numFloors
+
+			switch (buildingShape)
+			{
+				case buildingShapes.Lshape:
+
+						inpLength.value = Math.sqrt(floorArea*1.8)
+
+						inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
+
+						inpLength.max = 2*Math.sqrt(floorArea*1.8);
+
+						/// Width is y
+						inpWidth.value = Math.sqrt(floorArea*1.8)
+
+						inpWidth.min = floorArea/inpLength.value
+
+						inpWidth.max = 10*(floorArea/inpWidth.value) - 0.9*inpWidth.value
+
+						thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+
+						console.log("Building Shape successfully changed to L-shape")
+					break;
+				default:
+					throw new Error('Building type enum does not exist!')
+			}
+
+			updateShape()
+
+		}
+
+		function changeNumFloors(buildingArea = inpArea.value ,numFloors = inpFloors.value ,buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
+		{
+
+			floorArea = buildingArea/numFloors
+
+			switch (buildingShape)
+			{
+				case buildingShapes.Lshape:
+					/// Length is x
+					inpLength.max = 2*Math.sqrt(floorArea*1.8);
+
+					inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
+					oldLength = inpLength.value
+					// create factor change on the length
+					inpLength.value = Math.sqrt(previousinpFloorsValue/numFloors)*inpLength.value*inpWidth.value
+
+					/// Width is y
+					inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
+
+					inpWidth.min = floorArea/inpLength.value
+
+					inpWidth.value = Math.sqrt(previousinpFloorsValue/numFloors)*oldLength*inpWidth.value
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+
+				case buildingShapes.Hshape:
+
+					inpLength.max = lengthMax
+
+					inpLength.min = lengthMin
+
+					inpWidth.max = widthMax
+
+					inpWidth.min = widthMin
+
+					break;
+				case buildingShapes.Tshape:
+
+					inpLength.max = lengthMax
+
+					inpLength.min = lengthMin
+
+					inpWidth.max = widthMax
+
+					inpWidth.min = widthMin
+
+					break;
+				case buildingShapes.Boxshape:
+
+					inpLength.max = lengthMax
+
+					inpLength.min = lengthMin
+
+					inpWidth.max = widthMax
+
+					inpWidth.min = widthMin
+
+					break;
+				default:
+					throw new Error('Building type enum does not exist!')
+			}
+			// Update the previous value
+			previousinpFloorsValue = inpFloors.value
+
+			updateShape()
+
+		}
+
+		function changeBuildingArea(buildingArea = inpArea.value ,numFloors = inpFloors.value ,buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
+		{
+			floorArea = buildingArea/numFloors
+
+			switch (buildingShape)
+			{
+				case buildingShapes.Lshape:
+					/// Length is x
+					inpLength.max = 2*Math.sqrt(floorArea*1.8);
+
+					inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
+					oldLength = inpLength.value
+					// create factor change on the length
+					inpLength.value = Math.sqrt(previousinpAreaValue/buildingArea)*inpLength.value*inpWidth.value
+
+					/// Width is y
+					inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
+
+					inpWidth.min = floorArea/inpLength.value
+
+					inpWidth.value = Math.sqrt(previousinpAreaValue/buildingArea)*oldLength*inpWidth.value
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+
+				case buildingShapes.Hshape:
+
+					inpLength.max = lengthMax
+
+					inpLength.min = lengthMin
+
+					inpWidth.max = widthMax
+
+					inpWidth.min = widthMin
+
+					break;
+				case buildingShapes.Tshape:
+
+					inpLength.max = lengthMax
+
+					inpLength.min = lengthMin
+
+					inpWidth.max = widthMax
+
+					inpWidth.min = widthMin
+
+					break;
+				case buildingShapes.Boxshape:
+
+					inpLength.max = lengthMax
+
+					inpLength.min = lengthMin
+
+					inpWidth.max = widthMax
+
+					inpWidth.min = widthMin
+
+					break;
+				default:
+					throw new Error('Building type enum does not exist!')
+			}
+			// Update the previous value
+			previousinpAreaValue = inpArea.value
+
+			updateShape()
+
+		}
+
+
+		function changeLengthSlider(newLength = inpLength.value ,floorArea = inpFloors.value,buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
+		{
+
+			inpWidth.value = Math.sqrt(inpLength.value/newLength)*inpLength.value*inpWidth.value
+
+			switch (buildingShape)
+			{
+				case buildingShapes.Lshape:
+
+					inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
+
+					inpWidth.min = floorArea/inpLength.value
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+				case buildingShapes.Hshape:
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+				case buildingShapes.Tshape:
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+				case buildingShapes.Boxshape:
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+				default:
+					throw new Error('Building type enum does not exist!')
+			}
+
+			updateShape()
+		}
+
+		function changeWidthSlider(newWidth,floorArea,buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
+		{
+			inpWidth.value = newWidth
+
+			switch (buildingShape)
+			{
+				// Re-calculate thickness
+				case buildingShapes.Lshape:
+
+					inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
+
+					inpWidth.min = floorArea/inpLength.value
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+				case buildingShapes.Hshape:
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+				case buildingShapes.Tshape:
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+				case buildingShapes.Boxshape:
+
+					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+					break;
+				default:
+					throw new Error('Building type enum does not exist!')
+
+		}
+
+		updateShape()
 
 	}
-
 
 
 	function initThreejs() {
@@ -257,8 +508,6 @@
 
 	}
 
-
-
 	function addHelpers( size = 200 ) {
 
 		scene.remove( gridHelper, axesHelper );
@@ -278,31 +527,31 @@
 
 	function updateShape() {
 
-		const pathFunctions = [ getPathBox, getPathL, getPathT , getPathH ];
-
-		theBuilding.storeyHeight = parseInt( inpHeight.value, 10 );
-		theBuilding.orientation = parseInt( inpOrientation.value, 10 );
-
-		let mesh = theBuilding.mesh;
-
-		scene.remove( theBuilding.mesh );
-
-		const pathFunction = pathFunctions[ selShape.selectedIndex ];
-		theBuilding.path = pathFunction();
-
-		theBuilding.shape = selShape[ selShape.selectedIndex ];
-		theBuilding.mesh = createShape();
-
-		theBuilding.mesh.name = 'theBuilding';
-		theBuilding.mesh.position.z =  0.5 * theBuilding.storeyHeight * theBuilding.storeys;
-		theBuilding.mesh.rotation.z = - d2r * theBuilding.orientation;
-
-		scene.add( theBuilding.mesh );
-
-		outFloorArea.value = Math.round( theBuilding.area / theBuilding.storeys ).toLocaleString();
-		outLength.value = theBuilding.length.toFixed();
-		outWidth.value = theBuilding.width.toFixed();
-		outThickness.value = theBuilding.thickness.toFixed();
+		// const pathFunctions = [ getPathBox, getPathL, getPathT , getPathH ];
+		//
+		// theBuilding.storeyHeight = parseInt( inpHeight.value, 10 );
+		// theBuilding.orientation = parseInt( inpOrientation.value, 10 );
+		//
+		// let mesh = theBuilding.mesh;
+		//
+		// scene.remove( theBuilding.mesh );
+		//
+		// const pathFunction = pathFunctions[ selShape.selectedIndex ];
+		// theBuilding.path = pathFunction();
+		//
+		// theBuilding.shape = selShape[ selShape.selectedIndex ];
+		// theBuilding.mesh = createShape();
+		//
+		// theBuilding.mesh.name = 'theBuilding';
+		// theBuilding.mesh.position.z =  0.5 * theBuilding.storeyHeight * theBuilding.storeys;
+		// theBuilding.mesh.rotation.z = - d2r * theBuilding.orientation;
+		//
+		// scene.add( theBuilding.mesh );
+		//
+		// outFloorArea.value = Math.round( theBuilding.area / theBuilding.storeys ).toLocaleString();
+		// outLength.value = theBuilding.length.toFixed();
+		// outWidth.value = theBuilding.width.toFixed();
+		// outThickness.value = theBuilding.thickness.toFixed();
 
 	}
 
@@ -315,16 +564,13 @@
 		let wid = theBuilding.width;
 		let flr = theBuilding.storeys ;
 
-		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) { 
-//console.log( 'area', area  );
+		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) {
 
 			const areaNew = parseInt( inpArea.value, 10 )
 			const flrNew = parseInt( inpFloors.value, 10 );
 			const areaTemp = area * flrNew / flr;
-//console.log( 'areaTemp', areaTemp );
 
 			const ratio = Math.sqrt( area / areaTemp );
-//console.log( 'ratio', ratio );
 
 			len = Math.round( ratio * len );
 			wid = areaNew / ( len * flrNew );
@@ -358,11 +604,11 @@
 
 			inpLength.value = len;
 
-		} 
+		}
 
 		const pathBox = [ v2( len, 0 ), v2( 0, 0 ), v2( 0, wid ), v2( len, wid ), v2( len, 0 ) ];
 
-		divValidation.innerHTML = 
+		divValidation.innerHTML =
 			'<p>Validations</p>' +
 			'<p>Calculated Area: ' + flr * ( len * wid ) + '<p>' +
 			'<p>[flr * ( len * wid )]</p>' +
@@ -372,7 +618,7 @@
 
 		divThickness.style.display = 'none';
 
-//console.log( 'theBuilding', theBuilding );
+		//console.log( 'theBuilding', theBuilding );
 
 		return pathBox;
 
@@ -394,7 +640,7 @@
 
 		}
 
-		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) { 
+		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) {
 
 			const areaNew = parseInt( inpArea.value, 10 )
 			const flrNew = parseInt( inpFloors.value, 10 );
@@ -444,7 +690,7 @@
 		];
 
 
-		divValidation.innerHTML = 
+		divValidation.innerHTML =
 			'<p>Validations</p>' +
 			'<p>Calculated Area: ' + flr * ( thk * len + thk * ( wid - thk ) ) + '<p>' +
 			'<p>[ flr * ( thk * len + thk * ( wid - thk ) ) ]</p>' +
@@ -473,7 +719,7 @@
 
 		}
 
-		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) { 
+		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) {
 
 			const areaNew = parseInt( inpArea.value, 10 )
 			const flrNew = parseInt( inpFloors.value, 10 );
@@ -525,7 +771,7 @@
 			v2( len, 0 )
 		];
 
-		divValidation.innerHTML = 
+		divValidation.innerHTML =
 			'<p>Validations T Shape</p>' +
 			'<p>Calculated Area: ' + flr * ( thk * len + thk * ( wid - thk ) ) + '<p>' +
 			'<p>[ flr * ( thk * len + thk * ( wid - thk ) ) ]</p>' +
@@ -555,7 +801,7 @@
 
 		}
 
-		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) { 
+		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) {
 
 			const areaNew = parseInt( inpArea.value, 10 );
 			const areaTemp = area * flrNew / flr;
@@ -609,7 +855,7 @@
 			v2( len - thk, 0.5 * ( wid - thk ) )
 		];
 
-		divValidation.innerHTML = 
+		divValidation.innerHTML =
 			'<p>Valibations - H Shape</p>' +
 			'<p>Calculated Area: ' + ( flr * ( 2 * thk * wid ) + thk * ( len - 2 * thk ) ) + '</p>' +
 			'<p>[ ( flr * ( 2 * thk * wid ) + thk * ( len - 2 * thk ) ) ]</p>' +
