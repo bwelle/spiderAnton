@@ -226,11 +226,18 @@
 
 		}
 
+		/// Helper functions
+
 		function updateTextInput(val,elementID)
 		{
-			//console.log(val)
 			document.getElementById(elementID).value=val;
 		}
+
+		function roundHalf(num) {
+    return Math.round(num*2)/2;
+		}
+
+		////
 
 		function updateThicknessLshape()
 		{
@@ -260,18 +267,18 @@
 
 						inpLength.value = Math.sqrt(floorArea*1.8)
 
-						inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
+						inpLength.min = roundHalf(2/3*Math.sqrt(floorArea*1.8))
 
-						inpLength.max = 2*Math.sqrt(floorArea*1.8);
+						inpLength.max = roundHalf(2*Math.sqrt(floorArea*1.8))
 
 						/// Width is y
 						inpWidth.value = Math.sqrt(floorArea*1.8)
 
 						previousWidthValue = parseFloat(inpWidth.value)
 
-						inpWidth.min = floorArea/parseFloat(inpLength.value)
+						inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value))
 
-						inpWidth.max = 10*(floorArea/parseFloat(inpWidth.value)) - 0.9*parseFloat(inpWidth.value)
+						inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpWidth.value)) - 0.9*parseFloat(inpWidth.value))
 
 						updateThicknessLshape()
 
@@ -302,17 +309,17 @@
 			{
 				case buildingShapes.Lshape:
 					/// Length is x
-					inpLength.max = 2*Math.sqrt(floorArea*1.8);
+					inpLength.max = roundHalf(2*Math.sqrt(floorArea*1.8));
 
-					inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
+					inpLength.min = roundHalf(2/3*Math.sqrt(floorArea*1.8));
 
 					// create factor change on the length
 					inpLength.value = Math.sqrt(previousinpFloorsValue/parseInt(numFloors))*parseFloat(inpLength.value)
 
 					/// Width is y
-					inpWidth.max = 10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value)
+					inpWidth.max =  roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
 
-					inpWidth.min = floorArea/parseFloat(inpLength.value)
+					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
 
 					inpWidth.value = Math.sqrt(previousinpFloorsValue/parseInt(numFloors))*parseFloat(inpWidth.value)
 
@@ -378,18 +385,18 @@
 			{
 				case buildingShapes.Lshape:
 					/// Length is x
-					inpLength.max = 2*Math.sqrt(floorArea*1.8);
+					inpLength.max = roundHalf(2*Math.sqrt(floorArea*1.8));
 
-					inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
+					inpLength.min = roundHalf(2/3*Math.sqrt(floorArea*1.8));
 
 					// Must be by floor area
 					// create factor change on the length
 					inpLength.value = Math.sqrt(floorArea/previousinpAreaValue)*parseFloat(inpLength.value)
 
 					/// Width is y
-					inpWidth.max = 10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value)
+					inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
 
-					inpWidth.min = floorArea/parseFloat(inpLength.value)
+					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
 
 					inpWidth.value = Math.sqrt(floorArea/previousinpAreaValue)*parseFloat(inpWidth.value)
 					// User will never set the thickness themselves
@@ -454,9 +461,9 @@
 			{
 				case buildingShapes.Lshape:
 
-					inpWidth.max = 10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value)
+					inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
 
-					inpWidth.min = floorArea/parseFloat(inpLength.value)
+					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
 
 					inpWidth.value = ratio*(parseFloat(inpWidth.max)-parseFloat(inpWidth.min))+parseFloat(inpWidth.min)
 
@@ -498,9 +505,9 @@
 				// Re-calculate thickness
 				case buildingShapes.Lshape:
 
-					inpWidth.max = 10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value)
+					inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
 
-					inpWidth.min = floorArea/parseFloat(inpLength.value)
+					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
 
 					updateThicknessLshape()
 
