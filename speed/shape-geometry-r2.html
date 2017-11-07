@@ -33,6 +33,8 @@
 	#canvasOrtho { position:absolute; left: 100px; top: 50%; }
 	#divDimensions, #divDimensions div { left: 0; margin: 20px auto; right: 0; width: 250px; }
 
+	#divInput, #divCalcs { display: inline-block; margin: 0 10px; vertical-align: top; width: 300px; }
+
 
 </style>
 </head>
@@ -78,7 +80,7 @@
 			</tr>
 
 			<tr>
-				<td><select id=selShape size=4 onchange=changeBuildingShape(); ></select></td><td><select id=selMassing ></select></td><td><input type=number id=inpPerimeterDepth ></td><td><input type=number id=inpOrientation oninput=updateShape(this); ></td>
+				<td><select id=selShape size=4 onchange=changeBuildingShape(); ></select></td><td><select id=selMassing ></select></td><td><input type=number id=inpPerimeterDepth ></td><td><input type=number id=inpOrientation oninput=updateShape(); ></td>
 			</tr>
 
 		</table>
@@ -121,7 +123,9 @@
 
 	let lightAmbient, lightDirectional, cameraHelper, axisHelper;
 
-	var previousinpAreaValue,previousinpFloorsValue
+	var previousinpAreaValue,previousinpFloorsValue,previousWidthValue
+
+	var thickness
 
 	var v = function( x, y, z ){ return new THREE.Vector3( x, y, z ); };
 	var v2 = function( x, y ){ return new THREE.Vector2( x, y ); };
@@ -164,9 +168,11 @@
 
 	function init() {
 
+		initThreejs();
+
 		initInputFields();
 
-		initThreejs();
+		updateShape();
 
 		animate();
 
@@ -214,12 +220,11 @@
 		inpOrientation.min = -90;
 		inpOrientation.max = 90;
 
-		//changeBuildingShape(inpArea.value,inpFloors.value,stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
+		changeBuildingShape(inpArea.value,inpFloors.value,stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 
 		}
 
 		/// Implemented using the table in Geometry Logic map
-
 		function changeBuildingShape(buildingArea = inpArea.value, numFloors = inpFloors.value, buildingShape = selShape.value)
 		{
 			// Set the initials for each building Type
@@ -237,6 +242,8 @@
 
 						/// Width is y
 						inpWidth.value = Math.sqrt(floorArea*1.8)
+
+						previousWidthValue = inpWidth.value
 
 						inpWidth.min = floorArea/inpLength.value
 
@@ -268,14 +275,14 @@
 					inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
 					oldLength = inpLength.value
 					// create factor change on the length
-					inpLength.value = Math.sqrt(previousinpFloorsValue/numFloors)*inpLength.value*inpWidth.value
+					inpLength.value = Math.sqrt(previousinpFloorsValue/numFloors)*inpLength.value
 
 					/// Width is y
 					inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
 
 					inpWidth.min = floorArea/inpLength.value
 
-					inpWidth.value = Math.sqrt(previousinpFloorsValue/numFloors)*oldLength*inpWidth.value
+					inpWidth.value = Math.sqrt(previousinpFloorsValue/numFloors)*inpWidth.value
 
 					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
 					break;
@@ -335,16 +342,17 @@
 
 					inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
 					oldLength = inpLength.value
+					// Must be by floor area
 					// create factor change on the length
-					inpLength.value = Math.sqrt(previousinpAreaValue/buildingArea)*inpLength.value*inpWidth.value
+					inpLength.value = Math.sqrt(floorArea/previousinpAreaValue)*inpLength.value
 
 					/// Width is y
 					inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
 
 					inpWidth.min = floorArea/inpLength.value
 
-					inpWidth.value = Math.sqrt(previousinpAreaValue/buildingArea)*oldLength*inpWidth.value
-
+					inpWidth.value = Math.sqrt(floorArea/previousinpAreaValue)*inpWidth.value
+					// User will never set the thickness themselves
 					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
 					break;
 
@@ -390,12 +398,11 @@
 			updateShape()
 
 		}
-
-
+		
 		function changeLengthSlider(newLength = inpLength.value ,floorArea = inpFloors.value,buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
 
-			inpWidth.value = Math.sqrt(inpLength.value/newLength)*inpLength.value*inpWidth.value
+			ratio = (previousWidthValue-inpWidth.min)/(inpWidth.max-inpWidth.min)
 
 			switch (buildingShape)
 			{
@@ -404,6 +411,8 @@
 					inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
 
 					inpWidth.min = floorArea/inpLength.value
+
+					inpWidth.value = (inpWidth.max-inpWidth.min)*ratio+inpWidth.min
 
 					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
 					break;
@@ -455,13 +464,10 @@
 					break;
 				default:
 					throw new Error('Building type enum does not exist!')
-
 		}
 
 		updateShape()
-
 	}
-
 
 	function initThreejs() {
 
@@ -501,11 +507,7 @@
 		lightDirectional.castShadow = true;
 		scene.add( lightDirectional );
 
-
 		addHelpers();
-
-		updateShape();
-
 	}
 
 	function addHelpers( size = 200 ) {
@@ -523,10 +525,47 @@
 
 	}
 
-
-
 	function updateShape() {
 
+		outThickness.value = thickness
+
+		divValidation.innerHTML =
+			'<h3>Results from geometry logic</h3>' +
+			'building Area: ' + inpArea.value + '<br>' +
+			'number of Floors: ' + inpFloors.value + '<br>' +
+			'floor Area: ' + inpArea.value/inpFloors.value + '<br>' +
+			'<br>' +
+			'<b>Length</b><br>' +
+			'length: ' + inpLength.value + '<br>' +
+			'lengthMin: ' + inpLength.min + '<br>' +
+			'lengthMax: ' + inpLength.max + '<br>' +
+//			'lengthRange(): ' + lengthRange + '<br>' +
+			'<br>' +
+			'<b>Width</b><br>' +
+			'width: ' + inpWidth.value + '<br>' +
+			'widthMin: ' + inpWidth.min + '<br>' +
+			'widthMax: ' + inpWidth.max + '<br>' +
+//			'widthRange(): ' + widthRange + '<br>' +
+			'<br>' +
+		'';
+
+		inpLength.max = 2*Math.sqrt(floorArea*1.8);
+
+		inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
+		oldLength = inpLength.value
+		// Must be by floor area
+		// create factor change on the length
+		inpLength.value = Math.sqrt(floorArea/previousinpAreaValue)*inpLength.value
+
+		/// Width is y
+		inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
+
+		inpWidth.min = floorArea/inpLength.value
+
+		inpWidth.value = Math.sqrt(floorArea/previousinpAreaValue)*inpWidth.value
+
+		// theBuilding = {}
+		//
 		// const pathFunctions = [ getPathBox, getPathL, getPathT , getPathH ];
 		//
 		// theBuilding.storeyHeight = parseInt( inpHeight.value, 10 );
@@ -537,7 +576,10 @@
 		// scene.remove( theBuilding.mesh );
 		//
 		// const pathFunction = pathFunctions[ selShape.selectedIndex ];
+		//
 		// theBuilding.path = pathFunction();
+		//
+		// console.log(theBuilding.path)
 		//
 		// theBuilding.shape = selShape[ selShape.selectedIndex ];
 		// theBuilding.mesh = createShape();
@@ -554,8 +596,6 @@
 		// outThickness.value = theBuilding.thickness.toFixed();
 
 	}
-
-
 
 	function getPathBox() {
 
@@ -608,12 +648,12 @@
 
 		const pathBox = [ v2( len, 0 ), v2( 0, 0 ), v2( 0, wid ), v2( len, wid ), v2( len, 0 ) ];
 
-		divValidation.innerHTML =
-			'<p>Validations</p>' +
-			'<p>Calculated Area: ' + flr * ( len * wid ) + '<p>' +
-			'<p>[flr * ( len * wid )]</p>' +
-			'<p>Frame: ' + renderer.info.render.frame + '</p>' +
-		'';
+		// divValidation.innerHTML =
+		// 	'<p>Validations</p>' +
+		// 	'<p>Calculated Area: ' + flr * ( len * wid ) + '<p>' +
+		// 	'<p>[flr * ( len * wid )]</p>' +
+		// 	'<p>Frame: ' + renderer.info.render.frame + '</p>' +
+		// '';
 
 
 		divThickness.style.display = 'none';
@@ -624,13 +664,14 @@
 
 	}
 
-
-
 	function getPathL() {
 
 		let area = theBuilding.area;
+
 		let flr = theBuilding.storeys;
+
 		let len = theBuilding.length;
+		console.log(theBuilding.length)
 		let wid = theBuilding.width;
 		let thk = theBuilding.thickness;
 
@@ -690,20 +731,18 @@
 		];
 
 
-		divValidation.innerHTML =
-			'<p>Validations</p>' +
-			'<p>Calculated Area: ' + flr * ( thk * len + thk * ( wid - thk ) ) + '<p>' +
-			'<p>[ flr * ( thk * len + thk * ( wid - thk ) ) ]</p>' +
-			'<p>Frame: ' + renderer.info.render.frame + '</p>' +
-		'';
+		// divValidation.innerHTML =
+		// 	'<p>Validations</p>' +
+		// 	'<p>Calculated Area: ' + flr * ( thk * len + thk * ( wid - thk ) ) + '<p>' +
+		// 	'<p>[ flr * ( thk * len + thk * ( wid - thk ) ) ]</p>' +
+		// 	'<p>Frame: ' + renderer.info.render.frame + '</p>' +
+		// '';
 
 		divThickness.style.display = '';
 
 		return pathL;
 
 	}
-
-
 
 	function getPathT() {
 
@@ -771,20 +810,18 @@
 			v2( len, 0 )
 		];
 
-		divValidation.innerHTML =
-			'<p>Validations T Shape</p>' +
-			'<p>Calculated Area: ' + flr * ( thk * len + thk * ( wid - thk ) ) + '<p>' +
-			'<p>[ flr * ( thk * len + thk * ( wid - thk ) ) ]</p>' +
-			'<p>Frame: ' + renderer.info.render.frame + '</p>' +
-		'';
+		// divValidation.innerHTML =
+		// 	'<p>Validations T Shape</p>' +
+		// 	'<p>Calculated Area: ' + flr * ( thk * len + thk * ( wid - thk ) ) + '<p>' +
+		// 	'<p>[ flr * ( thk * len + thk * ( wid - thk ) ) ]</p>' +
+		// 	'<p>Frame: ' + renderer.info.render.frame + '</p>' +
+		// '';
 
 		divThickness.style.display = '';
 
 		return pathT;
 
 	}
-
-
 
 	function getPathH() {
 
@@ -855,20 +892,18 @@
 			v2( len - thk, 0.5 * ( wid - thk ) )
 		];
 
-		divValidation.innerHTML =
-			'<p>Valibations - H Shape</p>' +
-			'<p>Calculated Area: ' + ( flr * ( 2 * thk * wid ) + thk * ( len - 2 * thk ) ) + '</p>' +
-			'<p>[ ( flr * ( 2 * thk * wid ) + thk * ( len - 2 * thk ) ) ]</p>' +
-			'<p>Frame: ' + renderer.info.render.frame + '</p>' +
-		'';
+		// divValidation.innerHTML =
+		// 	'<p>Valibations - H Shape</p>' +
+		// 	'<p>Calculated Area: ' + ( flr * ( 2 * thk * wid ) + thk * ( len - 2 * thk ) ) + '</p>' +
+		// 	'<p>[ ( flr * ( 2 * thk * wid ) + thk * ( len - 2 * thk ) ) ]</p>' +
+		// 	'<p>Frame: ' + renderer.info.render.frame + '</p>' +
+		// '';
 
 		divThickness.style.display = '';
 
 		return pathH;
 
 	}
-
-
 
 	function createShape() {
 
@@ -890,9 +925,6 @@
 		return mesh;
 
 	}
-
-
-
 
 	function animate() {
 
