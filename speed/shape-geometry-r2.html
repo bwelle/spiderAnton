@@ -65,7 +65,7 @@
 
 			<tr>
 				<td><input type=number id=inpArea step=50 onchange=changeBuildingArea(); ></td>
-				<td><input type=number id=inpFloors onchange=changeNumFloors();></td>
+				<td><input type=number id=inpFloors step=1 onchange=changeNumFloors();></td>
 				<td><output type=number id=outFloorArea ></output></td>
 				<td><input type=number id=inpHeight onChange=updateShape(); ></td>
 				<td><input type=number id=inpShapeCount ></td>
@@ -91,12 +91,14 @@
 
 			<div>
 				Length <output id=outLength class=floatright ></output>
-				<input type=range id=inpLength oninput=changeLengthSlider(); >
+				<input type=range id=inpLength class="slider" oninput=changeLengthSlider(); >
+				<input type="text" id="textInput" value="">
 			</div>
 
 			<div>
 				Width <output id=outWidth class=floatright ></output>
-				<input type=range id=inpWidth oninput=changeWidthSlider(); >
+				<input type=range id=inpWidth class="slider" oninput=changeWidthSlider(); >
+				<input type="text" id="textInput" value="">
 			</div>
 
 			<div id=divThickness >
@@ -109,9 +111,9 @@
 
 	</div>
 
-	<canvas id="canvasPerspective" height=300 width=300 ></canvas>
+	<canvas id="canvasPerspective" height=1 width=1 ></canvas>
 
-	<canvas id="canvasOrtho"  height=300 width=300 ></canvas>
+	<canvas id="canvasOrtho"  height=1 width=1 ></canvas>
 
 <script>
 
@@ -224,6 +226,12 @@
 
 		}
 
+		function updateTextInput(val)
+		{
+			//console.log(val)
+			document.getElementById('textInput').value=val;
+		}
+
 		/// Implemented using the table in Geometry Logic map
 		function changeBuildingShape(buildingArea = inpArea.value, numFloors = inpFloors.value, buildingShape = selShape.value)
 		{
@@ -256,6 +264,10 @@
 				default:
 					throw new Error('Building type enum does not exist!')
 			}
+
+			updateTextInput(inpLength.value)
+
+			updateTextInput(inpWidth.value)
 
 			updateShape()
 
@@ -326,6 +338,10 @@
 			// Update the previous value
 			previousinpFloorsValue = inpFloors.value
 
+			updateTextInput(inpLength.value)
+
+			updateTextInput(inpWidth.value)
+
 			updateShape()
 
 		}
@@ -395,14 +411,20 @@
 			// Update the previous value
 			previousinpAreaValue = inpArea.value
 
+			updateTextInput(inpLength.value)
+
+			updateTextInput(inpWidth.value)
+
 			updateShape()
 
 		}
-		
+
 		function changeLengthSlider(newLength = inpLength.value ,floorArea = inpFloors.value,buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
-
+			console.log(previousWidthValue)
 			ratio = (previousWidthValue-inpWidth.min)/(inpWidth.max-inpWidth.min)
+
+			console.log(ratio)
 
 			switch (buildingShape)
 			{
@@ -410,11 +432,21 @@
 
 					inpWidth.max = 10*(floorArea/inpLength.value)-0.9*inpLength.value
 
+					console.log(inpWidth.max)
+
+					console.log(inpLength.value)
+
 					inpWidth.min = floorArea/inpLength.value
 
-					inpWidth.value = (inpWidth.max-inpWidth.min)*ratio+inpWidth.min
+					console.log(inpWidth.min)
+
+					inpWidth.value = ratio*(inpWidth.max-inpWidth.min)+inpWidth.min
 
 					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+
+					// Update previousWidthValue
+					previousWidthValue = inpWidth.value
+
 					break;
 				case buildingShapes.Hshape:
 
@@ -431,6 +463,10 @@
 				default:
 					throw new Error('Building type enum does not exist!')
 			}
+
+			updateTextInput(inpLength.value)
+
+			updateTextInput(inpWidth.value)
 
 			updateShape()
 		}
@@ -465,6 +501,10 @@
 				default:
 					throw new Error('Building type enum does not exist!')
 		}
+
+		updateTextInput(inpLength.value)
+
+		updateTextInput(inpWidth.value)
 
 		updateShape()
 	}
