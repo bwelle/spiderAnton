@@ -419,12 +419,12 @@
 
 		}
 
-		function changeLengthSlider(newLength = inpLength.value ,floorArea = inpFloors.value,buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
+		function changeLengthSlider(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
-			console.log(previousWidthValue)
-			ratio = (previousWidthValue-inpWidth.min)/(inpWidth.max-inpWidth.min)
 
-			console.log(ratio)
+			floorArea = inpArea.value/inpFloors.value
+
+			ratio = (previousWidthValue-inpWidth.min)/(inpWidth.max-inpWidth.min)
 
 			switch (buildingShape)
 			{
@@ -579,7 +579,7 @@
 			'length: ' + inpLength.value + '<br>' +
 			'lengthMin: ' + inpLength.min + '<br>' +
 			'lengthMax: ' + inpLength.max + '<br>' +
-//			'lengthRange(): ' + lengthRange + '<br>' +
+			//			'lengthRange(): ' + lengthRange + '<br>' +
 			'<br>' +
 			'<b>Width</b><br>' +
 			'width: ' + inpWidth.value + '<br>' +
