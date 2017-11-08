@@ -39,8 +39,8 @@
 </style>
 </head>
 <body>
-<script src = "http://cdn.rawgit.com/mrdoob/three.js/r88/build/three.min.js" ></script>
-<script src = "http://cdn.rawgit.com/mrdoob/three.js/r88/examples/js/controls/OrbitControls.js" ></script>
+<script src = "https://cdn.rawgit.com/mrdoob/three.js/r88/build/three.min.js" ></script>
+<script src = "https://cdn.rawgit.com/mrdoob/three.js/r88/examples/js/controls/OrbitControls.js" ></script>
 
 	<div id = "header" >
 
@@ -234,10 +234,8 @@
 		}
 
 		function roundHalf(num) {
-    return Math.round(num*2)/2;
+    	return Math.round(num*2)/2;
 		}
-
-		////
 
 		function updateThicknessLshape()
 		{
@@ -252,6 +250,32 @@
 			b = Math.sqrt(Math.pow(a,2)-floorArea)
 
 			thickness = a-b
+		}
+
+		function updateThicknessHshape()
+		{
+			buildingArea = parseFloat(inpArea.value)
+
+			numFloors = parseInt(inpFloors.value)
+
+			floorArea = buildingArea/numFloors
+
+			a = (parseFloat(inpLength.value)+2*parseFloat(inpWidth.value))/4
+
+			b = Math.sqrt(Math.pow(a,2)-floorArea/2)
+
+			thickness = a-b
+		}
+
+		function updateThicknessBoxshape()
+		{
+			buildingArea = parseFloat(inpArea.value)
+
+			numFloors = parseInt(inpFloors.value)
+
+			floorArea = buildingArea/numFloors
+
+			// thickness
 		}
 
 		/// Implemented using the table in Geometry Logic map
@@ -284,6 +308,10 @@
 
 						console.log("Building Shape successfully changed to L-shape")
 					break;
+				case buildingShapes.Hshape:
+
+
+
 				default:
 					throw new Error('Building type enum does not exist!')
 			}
