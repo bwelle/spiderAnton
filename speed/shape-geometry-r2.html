@@ -152,7 +152,8 @@
 		"numFloors":1,
 		"lengthChange":2,
 		"widthChange":3,
-		"irrevelent":4
+		"buildingShape":4,
+		"irrevelent":5
 	};
 
 	/// Helper functions
@@ -187,8 +188,6 @@
 
 		initInputFields();
 
-		updateShape();
-
 		animate();
 
 	}
@@ -197,13 +196,14 @@
 		/// Assume that we start on L-shape with a building area of 5000 and 1 floor
 
 		inpArea.value = 5000;
-		previousinpAreaValue = 5000;
+
+		buildingArea = 5000;
+
+		numFloors = 1;
 
 		inpFloors.min = 1;
 		inpFloors.max = 20;
 		inpFloors.value = 1;
-
-		previousinpFloorsValue = 1;
 
 		inpHeight.min = 8;
 		inpHeight.max = 20;
@@ -235,7 +235,7 @@
 		inpOrientation.min = -90;
 		inpOrientation.max = 90;
 
-		changeBuildingShape(stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
+			implementUserChange(userChange.buildingShape,stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 
 		}
 
@@ -298,61 +298,10 @@
 
 			floorArea = parseFloat(inpArea.value)/parseInt(inpFloors.value)
 
-			switch (buildingShape)
-			{
-				case buildingShapes.Lshape:
-
-						inpLength.value = Math.sqrt(floorArea*1.8)
-						length = Math.sqrt(floorArea*1.8)
-
-						inpLength.min = 2/3*Math.sqrt(floorArea*1.8)
-
-						inpLength.max = 2*Math.sqrt(floorArea*1.8)
-
-						/// Width is y
-						inpWidth.value = Math.sqrt(floorArea*1.8)
-						width = Math.sqrt(floorArea*1.8)
-
-						previousWidthValue = parseFloat(inpWidth.value)
-
-						inpWidth.min = floorArea/parseFloat(inpLength.value)
-
-						inpWidth.max = 10*(floorArea/parseFloat(inpWidth.value)) - 0.9*parseFloat(inpWidth.value)
-
-						updateThicknessLshape()
-
-						console.log("Building Shape successfully changed to L-shape")
-					break;
-				case buildingShapes.Hshape:
-
-				default:
-					throw new Error('Building type enum does not exist!')
-			}
-
-			//updateTextInput(inpLength.value,"lengthSlider")
-
-			//updateTextInput(inpWidth.value,'widthSlider')
-
-			updateShape()
-
 		}
 
 		function changeNumFloors(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
-
-			doCalculations(buildingShape).then(
-				values =>{setSliderValues(values)}
-			)
-			.then(
-				values =>
-				{
-					updateTextInput(values.length,"lengthSlider")
-					updateTextInput(values.width,'widthSlider')
-				}
-			)
-			.then(updateShape())
-			.then(updateThicknessLshape())
-
 		}
 
 		function changeBuildingArea(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
@@ -362,88 +311,11 @@
 		function changeLengthSlider(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
 
-			let length,width
-
-			floorArea = parseFloat(inpArea.value)/parseInt(inpFloors.value)
-
-			ratio = (previousWidthValue-parseFloat(inpWidth.min))/(parseFloat(inpWidth.max)-parseFloat(inpWidth.min))
-
-			switch (buildingShape)
-			{
-				case buildingShapes.Lshape:
-
-					inpWidth.max = 10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value);
-
-					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
-
-					inpWidth.value = ratio*(parseFloat(inpWidth.max)-parseFloat(inpWidth.min))+parseFloat(inpWidth.min)
-
-					updateThicknessLshape()
-
-					// Update previousWidthValue
-					previousWidthValue = inpWidth.value
-
-					break;
-				case buildingShapes.Hshape:
-
-					//thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
-					break;
-				case buildingShapes.Tshape:
-
-					//thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
-					break;
-				case buildingShapes.Boxshape:
-
-					//thickness = thickness = (parseFloat(inpWidth.value)+parseFloat(inpLength.value))/2 - Math.sqrt(((parseFloat(inpWidth.value)+parseFloat(inpLength.value))/2)^2-floorArea)
-					break;
-				default:
-					throw new Error('Building type enum does not exist!')
-			}
-
-			updateTextInput(inpLength.value,"lengthSlider")
-
-			updateTextInput(inpWidth.value,'widthSlider')
-
-			updateShape()
 		}
 
 		function changeWidthSlider(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
-			floorArea = parseFloat(inpArea.value)/parseInt(inpFloors.value)
 
-				switch (buildingShape)
-				{
-					// Re-calculate thickness
-					case buildingShapes.Lshape:
-
-						inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
-
-						inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
-
-						updateThicknessLshape()
-
-						break;
-					case buildingShapes.Hshape:
-
-						thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
-						break;
-					case buildingShapes.Tshape:
-
-						thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
-						break;
-					case buildingShapes.Boxshape:
-
-						thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
-						break;
-					default:
-						throw new Error('Building type enum does not exist!')
-			}
-
-			updateTextInput(inpLength.value,"lengthSlider")
-
-			updateTextInput(inpWidth.value,'widthSlider')
-
-			updateShape()
 		}
 
 	function initThreejs() {
@@ -599,7 +471,7 @@
 
 		switch (typeUserChange)
 		{
-			case typeUserChange.buildingArea:
+			case userChange.buildingArea:
 
 				// Calculate new floor area
 				newbuildingArea = parseFloat(inpArea.value)
@@ -610,13 +482,15 @@
 
 				widthLocal = Math.sqrt(factorChange)*width
 
-				lengthMax,lengthMin,widthMax,widthMin = calculateMinMax(buildingShape,floorArea,lengthLocal)
+				newFloorArea = newbuildingArea/numFloors
+
+				lengthMax,lengthMin,widthMax,widthMin = calculateMinMax(buildingShape,newFloorArea,lengthLocal)
 
 				// Update building area for future
-				buildingArea = parseFloat(inpArea.value)
+				buildingArea = newbuildingArea
 
 				break;
-			case typeUserChange.numFloors:
+			case userChange.numFloors:
 
 				newNumOfFloors = parseFloat(inpFloors.value)
 
@@ -626,19 +500,21 @@
 
 				widthLocal = Math.sqrt(factorChange)*width
 
-				lengthMax,lengthMin,widthMax,widthMin = calculateMinMax(buildingShape,floorArea,lengthLocal)
+				newFloorArea = buildingArea/newNumOfFloors
+
+				lengthMax,lengthMin,widthMax,widthMin = calculateMinMax(buildingShape,newFloorArea,lengthLocal)
 
 				// Update building area for future
-				numFloors = parseFloat(inpFloors.value)
+				numFloors = newNumOfFloors
 
 				break;
-			case typeUserChange.lengthChange:
-
-				floorArea = area/numFloors
+			case userChange.lengthChange:
 
 				lengthLocal = parseFloat(inpLength.value)
 
 				factorChange = (width-widthMin)/(widthMax-widthMin)
+
+				floorArea = buildingArea/numFloors
 
 				lengthMax,lengthMin,widthMax,widthMin = calculateMinMax(buildingShape,floorArea,lengthLocal)
 
@@ -646,16 +522,30 @@
 
 				break;
 
-			case typeUserChange.irrevelent:
+			case userChange.buildingShape:
+
+					floorArea = buildingArea/numFloors
+
+					lengthLocal = Math.sqrt(floorArea*1.8)
+
+					widthLocal = Math.sqrt(floorArea*1.8)
+
+					lengthMax,lengthMin,widthMax,widthMin = calculateMinMax(buildingShape,floorArea,lengthLocal)
+
+			case userChange.irrevelent:
 				factorChange = 1
 				break;
 
 			default:
-				throw new Error('Type of user change doesnt exist')
+				console.log(typeUserChange)
+				throw new Error('Type of user change doesnt exist');
 		}
+
+
 
 		return new Promise(function(resolve,reject){
 			resolve({length:lengthLocal,width:widthLocal,lengthMax:lengthMax,lengthMin:lengthMin,widthMax:widthMax,widthMin:widthMin})
+			console.log({length:lengthLocal,width:widthLocal,lengthMax:lengthMax,lengthMin:lengthMin,widthMax:widthMax,widthMin:widthMin})
 		})
 	}
 
@@ -668,18 +558,18 @@
 			'<h3>Results from geometry logic</h3>' +
 			'building Area: ' + inpArea.value + '<br>' +
 			'number of Floors: ' + inpFloors.value + '<br>' +
-			'floor Area: ' + inpArea.value/inpFloors.value + '<br>' +
+			'floor Area: ' + parseFloat(inpArea.value)/parseFloat(inpFloors.value) + '<br>' +
 			'<br>' +
 			'<b>Length</b><br>' +
-			'length: ' + inpLength.value + '<br>' +
-			'lengthMin: ' + inpLength.min + '<br>' +
-			'lengthMax: ' + inpLength.max + '<br>' +
+			'length: ' + values.length + '<br>' +
+			'lengthMin: ' + values.lengthMin + '<br>' +
+			'lengthMax: ' + values.lengthMax + '<br>' +
 			//			'lengthRange(): ' + lengthRange + '<br>' +
 			'<br>' +
 			'<b>Width</b><br>' +
-			'width: ' + inpWidth.value + '<br>' +
-			'widthMin: ' + inpWidth.min + '<br>' +
-			'widthMax: ' + inpWidth.max + '<br>' +
+			'width: ' + values.width + '<br>' +
+			'widthMin: ' + values.widthMin + '<br>' +
+			'widthMax: ' + values.widthMax + '<br>' +
 			//			'widthRange(): ' + widthRange + '<br>' +
 			'<br>' +
 		'';
@@ -717,8 +607,26 @@
 
 	}
 
-	function
-
+	function implementUserChange(typeUserChange,buildingShape)
+	{
+		doCalculations(typeUserChange,buildingShape).then(
+			values =>{setSliderValues(values);console.log(values)}
+		)
+		.then(
+			values =>
+			{
+				updateTextInput(values.length,"lengthSlider")
+				updateTextInput(values.width,'widthSlider')
+			}
+		)
+		.then(
+			values =>
+			{
+				updateShape(values)
+			}
+		)
+		//.then(updateThicknessLshape())
+	}
 
 	function getPathBox() {
 
