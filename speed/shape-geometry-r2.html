@@ -296,26 +296,29 @@
 		{
 			// Strangely in slider the values are stored as strings we need to make sure that they are parsed as numbers before used
 
-			floorArea = parseFloat(inpArea.value)/parseInt(inpFloors.value)
+			implementUserChange(userChange.buildingShape,buildingShape)
 
 		}
 
 		function changeNumFloors(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
+			implementUserChange(userChange.numFloors,buildingShape)
 		}
 
 		function changeBuildingArea(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
+			implementUserChange(userChange.buildingArea,buildingShape)
 		}
 
 		function changeLengthSlider(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
-
+			implementUserChange(userChange.lengthChange,buildingShape)
 		}
 
 		function changeWidthSlider(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
 
+			implementUserChange(userChange.widthChange,buildingShape)
 		}
 
 	function initThreejs() {
@@ -393,7 +396,7 @@
 		})
 	}
 
-	function doCalculations(typeUserChange,buildingShape)
+	function doCalculations(resolve,reject,typeUserChange,buildingShape)
 	{ //// General method for doing calculations
 
 		let factorChange
@@ -467,7 +470,7 @@
 
 						break;
 					default:
-						throw new Error('Building type enum does not exist!')
+						return reject('Building type enum does not exist!');
 				}
 			}
 
@@ -524,7 +527,15 @@
 
 				break;
 
+				case userChange.widthChange:
+
+					widthLocal = parseFloat(inpWidth.value)
+
+					break;
+
 			case userChange.buildingShape:
+
+					console.log("Building shape executing")
 
 					floorArea = buildingArea/numFloors
 
@@ -539,15 +550,10 @@
 				break;
 
 			default:
-				console.log(typeUserChange)
-				throw new Error('Type of user change doesnt exist');
+				return reject('Type of user change doesnt exist');
 		}
 
-
-
-		return new Promise(function(resolve,reject){
-			resolve({length:lengthLocal,width:widthLocal,lengthMax:lengthMax,lengthMin:lengthMin,widthMax:widthMax,widthMin:widthMin})
-		})
+		return resolve({length:lengthLocal,width:widthLocal,lengthMax:lengthMax,lengthMin:lengthMin,widthMax:widthMax,widthMin:widthMin})
 	}
 
 	function updateShape(values)
@@ -610,26 +616,26 @@
 
 	function implementUserChange(typeUserChange,buildingShape)
 	{
-		doCalculations(typeUserChange,buildingShape).then(
-			values =>
+		// Promise chaining taken from - https://javascript.info/promise-chaining
+		new Promise(function(resolve,reject)
+		{
+			// First do all calculations
+			doCalculations(resolve,reject,typeUserChange,buildingShape)
+		})
+		.then(function(values)
 			{
-				setSliderValues(values)
-			}
-		)
-		.then(
-			values =>
-			{
+				/// Update text on sliders
 				updateTextInput(values.length,"lengthSlider")
 				updateTextInput(values.width,'widthSlider')
-			}
-		)
-		.then(
-			values =>
+				return values
+			})
+			.then(function(values)
 			{
+				// Update the shape / display all the values
+				console.log(values)
 				updateShape(values)
 			}
-		)
-		//.then(updateThicknessLshape())
+			)
 	}
 
 	function getPathBox() {
