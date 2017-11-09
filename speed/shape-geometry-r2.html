@@ -378,24 +378,28 @@
 				})
 			}
 
-			doCalculations().then(values =>
-				{
-					previousinpFloorsValue = parseInt(inpFloors.value)
+			function setSliderValues(values)
+			{
+				previousinpFloorsValue = parseInt(inpFloors.value)
 
-					inpWidth.value,width = values.width
-					inpWidth.max = values.widthMax
-					inpWidth.min = values.widthMin
+				inpWidth.max = values.widthMax
+				inpWidth.min = values.widthMin
 
-					inpLength.value,length = values.length
-					inpLength.max = values.lengthMax
-					inpLength.min = values.lengthMin
+				inpWidth.value,width = values.width
 
-					return new Promise(function(resolve,reject){
-						resolve({length:length,width:width})
-					})
-				}
+				inpLength.max = values.lengthMax
+				inpLength.min = values.lengthMin
+
+				inpLength.value,length = values.length
+
+				return new Promise(function(resolve,reject){
+					resolve(values)
+				})
+			}
+			
+			doCalculations().then(
+				values =>{setSliderValues(values)}
 			)
-			.then(updateThicknessLshape())
 			.then(
 				values =>
 				{
@@ -404,6 +408,8 @@
 				}
 			)
 			.then(updateShape())
+			.then(updateThicknessLshape())
+
 		}
 
 		function changeBuildingArea(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
@@ -626,7 +632,7 @@
 
 	}
 
-	function updateShape() {
+	function updateShape(values) {
 
 		outThickness.value = thickness
 
