@@ -127,6 +127,8 @@
 
 	var previousinpAreaValue,previousinpFloorsValue,previousWidthValue
 
+	var length,width
+
 	var thickness
 
 	var v = function( x, y, z ){ return new THREE.Vector3( x, y, z ); };
@@ -290,19 +292,21 @@
 				case buildingShapes.Lshape:
 
 						inpLength.value = Math.sqrt(floorArea*1.8)
+						length = Math.sqrt(floorArea*1.8)
 
-						inpLength.min = roundHalf(2/3*Math.sqrt(floorArea*1.8))
+						inpLength.min = 2/3*Math.sqrt(floorArea*1.8)
 
-						inpLength.max = roundHalf(2*Math.sqrt(floorArea*1.8))
+						inpLength.max = 2*Math.sqrt(floorArea*1.8)
 
 						/// Width is y
 						inpWidth.value = Math.sqrt(floorArea*1.8)
+						width = Math.sqrt(floorArea*1.8)
 
 						previousWidthValue = parseFloat(inpWidth.value)
 
-						inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value))
+						inpWidth.min = floorArea/parseFloat(inpLength.value)
 
-						inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpWidth.value)) - 0.9*parseFloat(inpWidth.value))
+						inpWidth.max = 10*(floorArea/parseFloat(inpWidth.value)) - 0.9*parseFloat(inpWidth.value)
 
 						updateThicknessLshape()
 
@@ -310,15 +314,13 @@
 					break;
 				case buildingShapes.Hshape:
 
-
-
 				default:
 					throw new Error('Building type enum does not exist!')
 			}
 
-			updateTextInput(inpLength.value,"lengthSlider")
+			//updateTextInput(inpLength.value,"lengthSlider")
 
-			updateTextInput(inpWidth.value,'widthSlider')
+			//updateTextInput(inpWidth.value,'widthSlider')
 
 			updateShape()
 
@@ -327,78 +329,81 @@
 		function changeNumFloors(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
 
-			// Strangely in slider the values are stored as strings we need to make sure that they are parsed as numbers before used
-
-			floorArea = parseFloat(inpArea.value)/parseInt(inpFloors.value)
-
-			numFloors = parseInt(inpFloors.value)
-
-			switch (buildingShape)
+			function doCalculations()
 			{
-				case buildingShapes.Lshape:
-					/// Length is x
-					inpLength.max = roundHalf(2*Math.sqrt(floorArea*1.8));
+				let lengthLocal,widthLocal
+				let widthMin,widthMax
+				let lengthMin,lengthMax
 
-					inpLength.min = roundHalf(2/3*Math.sqrt(floorArea*1.8));
+				floorArea = parseFloat(inpArea.value)/parseInt(inpFloors.value)
 
-					// create factor change on the length
-					inpLength.value = Math.sqrt(previousinpFloorsValue/parseInt(numFloors))*parseFloat(inpLength.value)
+				numFloors = parseInt(inpFloors.value)
 
-					/// Width is y
-					inpWidth.max =  roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
+				switch (buildingShape)
+				{
+					case buildingShapes.Lshape:
 
-					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
+						// create factor change on the length
+						lengthLocal = Math.sqrt(previousinpFloorsValue/parseInt(numFloors))*length
 
-					inpWidth.value = Math.sqrt(previousinpFloorsValue/parseInt(numFloors))*parseFloat(inpWidth.value)
+						/// Length is x
+						lengthMax = 2*Math.sqrt(floorArea*1.8);
 
-					updateThicknessLshape()
-					break;
+						lengthMin = 2/3*Math.sqrt(floorArea*1.8);
 
-				case buildingShapes.Hshape:
+						widthLocal = Math.sqrt(previousinpFloorsValue/parseInt(numFloors))*width
 
-					inpLength.max = lengthMax
+						/// Width is y
+						widthMax =  10*(floorArea/parseFloat(lengthLocal))-0.9*parseFloat(lengthLocal);
 
-					inpLength.min = lengthMin
+						widthMin = floorArea/parseFloat(lengthLocal);
 
-					inpWidth.max = widthMax
+						break;
 
-					inpWidth.min = widthMin
+					case buildingShapes.Hshape:
 
-					break;
-				case buildingShapes.Tshape:
+						break;
+					case buildingShapes.Tshape:
 
-					inpLength.max = lengthMax
+						break;
+					case buildingShapes.Boxshape:
 
-					inpLength.min = lengthMin
+						break;
+					default:
+						throw new Error('Building type enum does not exist!')
+				}
 
-					inpWidth.max = widthMax
-
-					inpWidth.min = widthMin
-
-					break;
-				case buildingShapes.Boxshape:
-
-					inpLength.max = lengthMax
-
-					inpLength.min = lengthMin
-
-					inpWidth.max = widthMax
-
-					inpWidth.min = widthMin
-
-					break;
-				default:
-					throw new Error('Building type enum does not exist!')
+				return new Promise(function(resolve,reject){
+					resolve({length:lengthLocal,width:widthLocal,lengthMax:lengthMax,lengthMin:lengthMin,widthMax:widthMax,widthMin:widthMin})
+				})
 			}
-			// Update the previous value
-			previousinpFloorsValue = parseInt(inpFloors.value)
 
-			updateTextInput(inpLength.value,"lengthSlider")
+			doCalculations().then(values =>
+				{
+					previousinpFloorsValue = parseInt(inpFloors.value)
 
-			updateTextInput(inpWidth.value,'widthSlider')
+					inpWidth.value,width = values.width
+					inpWidth.max = values.widthMax
+					inpWidth.min = values.widthMin
 
-			updateShape()
+					inpLength.value,length = values.length
+					inpLength.max = values.lengthMax
+					inpLength.min = values.lengthMin
 
+					return new Promise(function(resolve,reject){
+						resolve({length:length,width:width})
+					})
+				}
+			)
+			.then(updateThicknessLshape())
+			.then(
+				values =>
+				{
+					updateTextInput(values.length,"lengthSlider")
+					updateTextInput(values.width,'widthSlider')
+				}
+			)
+			.then(updateShape())
 		}
 
 		function changeBuildingArea(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
@@ -413,18 +418,18 @@
 			{
 				case buildingShapes.Lshape:
 					/// Length is x
-					inpLength.max = roundHalf(2*Math.sqrt(floorArea*1.8));
+					inpLength.max = 2*Math.sqrt(floorArea*1.8);
 
-					inpLength.min = roundHalf(2/3*Math.sqrt(floorArea*1.8));
+					inpLength.min = 2/3*Math.sqrt(floorArea*1.8);
 
 					// Must be by floor area
 					// create factor change on the length
 					inpLength.value = Math.sqrt(floorArea/previousinpAreaValue)*parseFloat(inpLength.value)
 
 					/// Width is y
-					inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
+					inpWidth.max = 10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value);
 
-					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
+					inpWidth.min = floorArea/parseFloat(inpLength.value);
 
 					inpWidth.value = Math.sqrt(floorArea/previousinpAreaValue)*parseFloat(inpWidth.value)
 					// User will never set the thickness themselves
@@ -481,6 +486,8 @@
 		function changeLengthSlider(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
 
+			let length,width
+
 			floorArea = parseFloat(inpArea.value)/parseInt(inpFloors.value)
 
 			ratio = (previousWidthValue-parseFloat(inpWidth.min))/(parseFloat(inpWidth.max)-parseFloat(inpWidth.min))
@@ -489,7 +496,7 @@
 			{
 				case buildingShapes.Lshape:
 
-					inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
+					inpWidth.max = 10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value);
 
 					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
 
@@ -528,40 +535,40 @@
 		{
 			floorArea = parseFloat(inpArea.value)/parseInt(inpFloors.value)
 
-			switch (buildingShape)
-			{
-				// Re-calculate thickness
-				case buildingShapes.Lshape:
+				switch (buildingShape)
+				{
+					// Re-calculate thickness
+					case buildingShapes.Lshape:
 
-					inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
+						inpWidth.max = roundHalf(10*(floorArea/parseFloat(inpLength.value))-0.9*parseFloat(inpLength.value));
 
-					inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
+						inpWidth.min = roundHalf(floorArea/parseFloat(inpLength.value));
 
-					updateThicknessLshape()
+						updateThicknessLshape()
 
-					break;
-				case buildingShapes.Hshape:
+						break;
+					case buildingShapes.Hshape:
 
-					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
-					break;
-				case buildingShapes.Tshape:
+						thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+						break;
+					case buildingShapes.Tshape:
 
-					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
-					break;
-				case buildingShapes.Boxshape:
+						thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+						break;
+					case buildingShapes.Boxshape:
 
-					thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
-					break;
-				default:
-					throw new Error('Building type enum does not exist!')
+						thickness = (inpWidth.value+inpLength.value)/2 - Math.sqrt(((inpWidth.value+inpLength.value)/2)^2-floorArea)
+						break;
+					default:
+						throw new Error('Building type enum does not exist!')
+			}
+
+			updateTextInput(inpLength.value,"lengthSlider")
+
+			updateTextInput(inpWidth.value,'widthSlider')
+
+			updateShape()
 		}
-
-		updateTextInput(inpLength.value,"lengthSlider")
-
-		updateTextInput(inpWidth.value,'widthSlider')
-
-		updateShape()
-	}
 
 	function initThreejs() {
 
