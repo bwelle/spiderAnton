@@ -1,16 +1,16 @@
-<gbXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" temperatureUnit="C" useSIUnitsForResults="true" lengthUnit="Meters" xmlns:xsd="http://www.w3.org/2001/XMLSchema" areaUnit="SquareMeters" xsi:schemaLocation="http://www.gbxml.org/schema http://gbxml.org/schema/6-01/GreenBuildingXML_Ver6.01.xsd" xmlns="http://www.gbxml.org/schema" volumeUnit="CubicMeters" version="6.01" SurfaceReferenceLocation="Centerline" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<gbXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" volumeUnit="CubicMeters" xmlns="http://www.gbxml.org/schema" xsi:schemaLocation="http://www.gbxml.org/schema http://gbxml.org/schema/6-01/GreenBuildingXML_Ver6.01.xsd" SurfaceReferenceLocation="Centerline" useSIUnitsForResults="true" xmlns:xsd="http://www.w3.org/2001/XMLSchema" version="6.01" lengthUnit="Meters" xmlns:xhtml="http://www.w3.org/1999/xhtml" areaUnit="SquareMeters" temperatureUnit="C">
   <Campus id="Facility">
     <Name>Facility</Name>
     <Building id="East_entrance_bldg_v2" buildingType="Unknown">
       <Name>East entrance bldg v2</Name>
       <Area>69.758039</Area>
-      <Space id="Entry_way_1" buildingStoreyIdRef="Level_0" zoneIdRef="Single_zone">
+      <Space id="Entry_way_1" zoneIdRef="Single_zone" buildingStoreyIdRef="Level_0">
         <Name>Entry way 1</Name>
         <Area>12.451266</Area>
         <Volume>41.746604</Volume>
         <LightPowerPerArea unit="WattPerSquareMeter">7.992762</LightPowerPerArea>
       </Space>
-      <Space id="Utility_1" buildingStoreyIdRef="Level_0" zoneIdRef="Single_zone">
+      <Space id="Utility_1" zoneIdRef="Single_zone" buildingStoreyIdRef="Level_0">
         <Name>Utility 1</Name>
         <Area>16.437597</Area>
         <Volume>55.111975</Volume>
@@ -18,7 +18,7 @@
         <LightPowerPerArea unit="WattPerSquareMeter">12.123427</LightPowerPerArea>
         <EquipPowerPerArea unit="WattPerSquareMeter">5.475253</EquipPowerPerArea>
       </Space>
-      <Space id="Open_area_1" buildingStoreyIdRef="Level_0" zoneIdRef="Single_zone">
+      <Space id="Open_area_1" zoneIdRef="Single_zone" buildingStoreyIdRef="Level_0">
         <Name>Open area 1</Name>
         <Area>35.653368</Area>
         <Volume>119.538612</Volume>
@@ -26,7 +26,7 @@
         <LightPowerPerArea unit="WattPerSquareMeter">13.059075</LightPowerPerArea>
         <EquipPowerPerArea unit="WattPerSquareMeter">57.217596</EquipPowerPerArea>
       </Space>
-      <Space id="Small_office_1" buildingStoreyIdRef="Level_0" zoneIdRef="Single_zone">
+      <Space id="Small_office_1" zoneIdRef="Single_zone" buildingStoreyIdRef="Level_0">
         <Name>Small office 1</Name>
         <Area>17.667075</Area>
         <Volume>59.234168</Volume>
@@ -34,7 +34,7 @@
         <LightPowerPerArea unit="WattPerSquareMeter">38.824764</LightPowerPerArea>
         <EquipPowerPerArea unit="WattPerSquareMeter">20.093875</EquipPowerPerArea>
       </Space>
-      <Space id="Level_0_Ceiling_Plenum" buildingStoreyIdRef="Level_0" zoneIdRef="Level_0_Ceiling_Plenum_Zone">
+      <Space id="Level_0_Ceiling_Plenum" zoneIdRef="Level_0_Ceiling_Plenum_Zone" buildingStoreyIdRef="Level_0">
         <Name>Level 0 Ceiling Plenum</Name>
         <Area>0.000000</Area>
         <Volume>0.000000</Volume>
@@ -2518,44 +2518,20 @@
   </Construction>
   <WindowType id="Air_Wall">
     <Name>Air Wall</Name>
-    <Transmittance surfaceType="Both" unit="Fraction" type="Visible">1</Transmittance>
+    <Transmittance unit="Fraction" surfaceType="Both" type="Visible">1</Transmittance>
   </WindowType>
   <WindowType id="id_3'0&quot;_x_3'0&quot;_Double_pane__Alum_Construction">
     <Name>3'0" x 3'0" Double pane  Alum Construction</Name>
     <U-value unit="WPerSquareMeterK">2.49844</U-value>
     <SolarHeatGainCoeff unit="Fraction">0.38</SolarHeatGainCoeff>
   </WindowType>
-  <Layer id="Gypsum_Board_-_3_4_in._Layer">
-    <Name>Gypsum Board - 3/4 in. Layer</Name>
-    <MaterialId materialIdRef="Gypsum_Board_-_3_4_in."/>
-  </Layer>
-  <Layer id="Stuco_Layer">
-    <Name>Stuco Layer</Name>
-    <MaterialId materialIdRef="Stuco"/>
-  </Layer>
   <Layer id="Gypsum_Board_-_5_8_in._Layer">
     <Name>Gypsum Board - 5/8 in. Layer</Name>
     <MaterialId materialIdRef="Gypsum_Board_-_5_8_in."/>
   </Layer>
-  <Layer id="Hardboard_-_High_Density_-_Standard-tempered_Grade_-_3_4_in._Layer">
-    <Name>Hardboard - High Density - Standard-tempered Grade - 3/4 in. Layer</Name>
-    <MaterialId materialIdRef="Hardboard_-_High_Density_-_Standard-tempered_Grade_-_3_4_in."/>
-  </Layer>
-  <Layer id="Mineral_Fiber_Batt_Insulation_-_10_in._Layer">
-    <Name>Mineral Fiber Batt Insulation - 10 in. Layer</Name>
-    <MaterialId materialIdRef="Mineral_Fiber_Batt_Insulation_-_10_in."/>
-  </Layer>
-  <Layer id="Vegetable_Fiber_Board__Sheathing_-_Intermediate_Density_-_1_2_in._Layer">
-    <Name>Vegetable Fiber Board  Sheathing - Intermediate Density - 1/2 in. Layer</Name>
-    <MaterialId materialIdRef="Vegetable_Fiber_Board__Sheathing_-_Intermediate_Density_-_1_2_in."/>
-  </Layer>
   <Layer id="Lightweight_Concrete_-_6_in._-_80_lb_ft3_Layer">
     <Name>Lightweight Concrete - 6 in. - 80 lb/ft3 Layer</Name>
     <MaterialId materialIdRef="Lightweight_Concrete_-_6_in._-_80_lb_ft3"/>
-  </Layer>
-  <Layer id="Built-up_Roofing_-_3_8_in._Layer">
-    <Name>Built-up Roofing - 3/8 in. Layer</Name>
-    <MaterialId materialIdRef="Built-up_Roofing_-_3_8_in."/>
   </Layer>
   <Layer id="Expanded_Polystyrene_-_Extruded_-_1_in._Layer">
     <Name>Expanded Polystyrene - Extruded - 1 in. Layer</Name>
@@ -2569,54 +2545,38 @@
     <Name>Wood-Framed - 4 in. Studs - 16 in. OC - R-11 Cavity Insulation Layer</Name>
     <MaterialId materialIdRef="Wood-Framed_-_4_in._Studs_-_16_in._OC_-_R-11_Cavity_Insulation"/>
   </Layer>
-  <Material id="Gypsum_Board_-_3_4_in.">
-    <Name>Gypsum Board - 3/4 in.</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
-    <Roughness value="MediumSmooth"/>
-    <Thickness unit="Meters">0.01905</Thickness>
-    <Conductivity unit="WPerMeterK">0.16</Conductivity>
-    <Density unit="KgPerCubicM">800</Density>
-    <SpecificHeat unit="JPerKgK">1090</SpecificHeat>
-    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
-  </Material>
-  <Material id="Stuco">
-    <Name>Stuco</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.5</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.5</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.5</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.5</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.5</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.5</Reflectance>
-    <Roughness value="Rough"/>
-    <Thickness unit="Meters">0.013</Thickness>
-    <Conductivity unit="WPerMeterK">0.721139</Conductivity>
-    <Density unit="KgPerCubicM">2659</Density>
-    <SpecificHeat unit="JPerKgK">837</SpecificHeat>
-    <Absorptance unit="Fraction" type="ExtIR">0.5</Absorptance>
-    <Absorptance unit="Fraction" type="IntIR">0.5</Absorptance>
-    <Absorptance unit="Fraction" type="ExtSolar">0.5</Absorptance>
-    <Absorptance unit="Fraction" type="IntSolar">0.5</Absorptance>
-    <Absorptance unit="Fraction" type="ExtVisible">0.5</Absorptance>
-    <Absorptance unit="Fraction" type="IntVisible">0.5</Absorptance>
-  </Material>
+  <Layer id="Vegetable_Fiber_Board__Sheathing_-_Intermediate_Density_-_1_2_in._Layer">
+    <Name>Vegetable Fiber Board  Sheathing - Intermediate Density - 1/2 in. Layer</Name>
+    <MaterialId materialIdRef="Vegetable_Fiber_Board__Sheathing_-_Intermediate_Density_-_1_2_in."/>
+  </Layer>
+  <Layer id="Built-up_Roofing_-_3_8_in._Layer">
+    <Name>Built-up Roofing - 3/8 in. Layer</Name>
+    <MaterialId materialIdRef="Built-up_Roofing_-_3_8_in."/>
+  </Layer>
+  <Layer id="Hardboard_-_High_Density_-_Standard-tempered_Grade_-_3_4_in._Layer">
+    <Name>Hardboard - High Density - Standard-tempered Grade - 3/4 in. Layer</Name>
+    <MaterialId materialIdRef="Hardboard_-_High_Density_-_Standard-tempered_Grade_-_3_4_in."/>
+  </Layer>
+  <Layer id="Mineral_Fiber_Batt_Insulation_-_10_in._Layer">
+    <Name>Mineral Fiber Batt Insulation - 10 in. Layer</Name>
+    <MaterialId materialIdRef="Mineral_Fiber_Batt_Insulation_-_10_in."/>
+  </Layer>
+  <Layer id="Gypsum_Board_-_3_4_in._Layer">
+    <Name>Gypsum Board - 3/4 in. Layer</Name>
+    <MaterialId materialIdRef="Gypsum_Board_-_3_4_in."/>
+  </Layer>
+  <Layer id="Stuco_Layer">
+    <Name>Stuco Layer</Name>
+    <MaterialId materialIdRef="Stuco"/>
+  </Layer>
   <Material id="Gypsum_Board_-_5_8_in.">
     <Name>Gypsum Board - 5/8 in.</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
     <Roughness value="MediumSmooth"/>
     <Thickness unit="Meters">0.015875</Thickness>
     <Conductivity unit="WPerMeterK">0.16</Conductivity>
@@ -2629,74 +2589,14 @@
     <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
     <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
   </Material>
-  <Material id="Hardboard_-_High_Density_-_Standard-tempered_Grade_-_3_4_in.">
-    <Name>Hardboard - High Density - Standard-tempered Grade - 3/4 in.</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
-    <Roughness value="Smooth"/>
-    <Thickness unit="Meters">0.01905</Thickness>
-    <Conductivity unit="WPerMeterK">0.144</Conductivity>
-    <Density unit="KgPerCubicM">1010</Density>
-    <SpecificHeat unit="JPerKgK">1340</SpecificHeat>
-    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
-  </Material>
-  <Material id="Mineral_Fiber_Batt_Insulation_-_10_in.">
-    <Name>Mineral Fiber Batt Insulation - 10 in.</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
-    <Roughness value="VeryRough"/>
-    <Thickness unit="Meters">0.254</Thickness>
-    <Conductivity unit="WPerMeterK">0.05</Conductivity>
-    <Density unit="KgPerCubicM">19</Density>
-    <SpecificHeat unit="JPerKgK">960</SpecificHeat>
-    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
-  </Material>
-  <Material id="Vegetable_Fiber_Board__Sheathing_-_Intermediate_Density_-_1_2_in.">
-    <Name>Vegetable Fiber Board  Sheathing - Intermediate Density - 1/2 in.</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
-    <Roughness value="Smooth"/>
-    <Thickness unit="Meters">0.0127</Thickness>
-    <Conductivity unit="WPerMeterK">0.057</Conductivity>
-    <Density unit="KgPerCubicM">350</Density>
-    <SpecificHeat unit="JPerKgK">1300</SpecificHeat>
-    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
-  </Material>
   <Material id="Lightweight_Concrete_-_6_in._-_80_lb_ft3">
     <Name>Lightweight Concrete - 6 in. - 80 lb/ft3</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
     <Roughness value="MediumRough"/>
     <Thickness unit="Meters">0.1524</Thickness>
     <Conductivity unit="WPerMeterK">0.53</Conductivity>
@@ -2709,34 +2609,14 @@
     <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
     <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
   </Material>
-  <Material id="Built-up_Roofing_-_3_8_in.">
-    <Name>Built-up Roofing - 3/8 in.</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
-    <Roughness value="Rough"/>
-    <Thickness unit="Meters">0.009525</Thickness>
-    <Conductivity unit="WPerMeterK">0.16</Conductivity>
-    <Density unit="KgPerCubicM">1120</Density>
-    <SpecificHeat unit="JPerKgK">1460</SpecificHeat>
-    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
-    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
-    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
-  </Material>
   <Material id="Expanded_Polystyrene_-_Extruded_-_1_in.">
     <Name>Expanded Polystyrene - Extruded - 1 in.</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
     <Roughness value="MediumSmooth"/>
     <Thickness unit="Meters">0.0254</Thickness>
     <Conductivity unit="WPerMeterK">0.029</Conductivity>
@@ -2751,12 +2631,12 @@
   </Material>
   <Material id="Wood-Framed_-_4_in._Studs_-_16_in._OC_-_R-0_Cavity_Insulation">
     <Name>Wood-Framed - 4 in. Studs - 16 in. OC - R-0 Cavity Insulation</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
     <Roughness value="Smooth"/>
     <Thickness unit="Meters">0.0889</Thickness>
     <Conductivity unit="WPerMeterK">0.367217</Conductivity>
@@ -2771,12 +2651,12 @@
   </Material>
   <Material id="Wood-Framed_-_4_in._Studs_-_16_in._OC_-_R-11_Cavity_Insulation">
     <Name>Wood-Framed - 4 in. Studs - 16 in. OC - R-11 Cavity Insulation</Name>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntIR">0.1</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntSolar">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="ExtVisible">0.3</Reflectance>
-    <Reflectance surfaceType="Both" unit="Fraction" type="IntVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
     <Roughness value="Smooth"/>
     <Thickness unit="Meters">0.0889</Thickness>
     <Conductivity unit="WPerMeterK">0.0603344</Conductivity>
@@ -2789,6 +2669,126 @@
     <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
     <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
   </Material>
+  <Material id="Vegetable_Fiber_Board__Sheathing_-_Intermediate_Density_-_1_2_in.">
+    <Name>Vegetable Fiber Board  Sheathing - Intermediate Density - 1/2 in.</Name>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
+    <Roughness value="Smooth"/>
+    <Thickness unit="Meters">0.0127</Thickness>
+    <Conductivity unit="WPerMeterK">0.057</Conductivity>
+    <Density unit="KgPerCubicM">350</Density>
+    <SpecificHeat unit="JPerKgK">1300</SpecificHeat>
+    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
+  </Material>
+  <Material id="Built-up_Roofing_-_3_8_in.">
+    <Name>Built-up Roofing - 3/8 in.</Name>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
+    <Roughness value="Rough"/>
+    <Thickness unit="Meters">0.009525</Thickness>
+    <Conductivity unit="WPerMeterK">0.16</Conductivity>
+    <Density unit="KgPerCubicM">1120</Density>
+    <SpecificHeat unit="JPerKgK">1460</SpecificHeat>
+    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
+  </Material>
+  <Material id="Hardboard_-_High_Density_-_Standard-tempered_Grade_-_3_4_in.">
+    <Name>Hardboard - High Density - Standard-tempered Grade - 3/4 in.</Name>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
+    <Roughness value="Smooth"/>
+    <Thickness unit="Meters">0.01905</Thickness>
+    <Conductivity unit="WPerMeterK">0.144</Conductivity>
+    <Density unit="KgPerCubicM">1010</Density>
+    <SpecificHeat unit="JPerKgK">1340</SpecificHeat>
+    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
+  </Material>
+  <Material id="Mineral_Fiber_Batt_Insulation_-_10_in.">
+    <Name>Mineral Fiber Batt Insulation - 10 in.</Name>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
+    <Roughness value="VeryRough"/>
+    <Thickness unit="Meters">0.254</Thickness>
+    <Conductivity unit="WPerMeterK">0.05</Conductivity>
+    <Density unit="KgPerCubicM">19</Density>
+    <SpecificHeat unit="JPerKgK">960</SpecificHeat>
+    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
+  </Material>
+  <Material id="Gypsum_Board_-_3_4_in.">
+    <Name>Gypsum Board - 3/4 in.</Name>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.1</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.3</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.3</Reflectance>
+    <Roughness value="MediumSmooth"/>
+    <Thickness unit="Meters">0.01905</Thickness>
+    <Conductivity unit="WPerMeterK">0.16</Conductivity>
+    <Density unit="KgPerCubicM">800</Density>
+    <SpecificHeat unit="JPerKgK">1090</SpecificHeat>
+    <Absorptance unit="Fraction" type="ExtIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="IntIR">0.9</Absorptance>
+    <Absorptance unit="Fraction" type="ExtSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntSolar">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="ExtVisible">0.7</Absorptance>
+    <Absorptance unit="Fraction" type="IntVisible">0.7</Absorptance>
+  </Material>
+  <Material id="Stuco">
+    <Name>Stuco</Name>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtIR">0.5</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntIR">0.5</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtSolar">0.5</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntSolar">0.5</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="ExtVisible">0.5</Reflectance>
+    <Reflectance unit="Fraction" surfaceType="Both" type="IntVisible">0.5</Reflectance>
+    <Roughness value="Rough"/>
+    <Thickness unit="Meters">0.013</Thickness>
+    <Conductivity unit="WPerMeterK">0.721139</Conductivity>
+    <Density unit="KgPerCubicM">2659</Density>
+    <SpecificHeat unit="JPerKgK">837</SpecificHeat>
+    <Absorptance unit="Fraction" type="ExtIR">0.5</Absorptance>
+    <Absorptance unit="Fraction" type="IntIR">0.5</Absorptance>
+    <Absorptance unit="Fraction" type="ExtSolar">0.5</Absorptance>
+    <Absorptance unit="Fraction" type="IntSolar">0.5</Absorptance>
+    <Absorptance unit="Fraction" type="ExtVisible">0.5</Absorptance>
+    <Absorptance unit="Fraction" type="IntVisible">0.5</Absorptance>
+  </Material>
   <Zone id="Single_zone">
     <Name>Single zone</Name>
     <DesignHeatT unit="C">22.111111</DesignHeatT>
@@ -2798,7 +2798,7 @@
     <Name>Level 0 Ceiling Plenum Zone</Name>
   </Zone>
   <DocumentHistory>
-    <CreatedBy programId="openstudio" date="2017-10-10T11:53:15-07:00" personId="unknown"/>
+    <CreatedBy date="2017-11-08T20:50:56-08:00" personId="unknown" programId="openstudio"/>
     <ProgramInfo id="openstudio">
       <ProductName>OpenStudio</ProductName>
       <Version>2.3.0</Version>
