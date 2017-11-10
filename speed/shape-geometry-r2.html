@@ -135,6 +135,8 @@
 
 	var thickness
 
+	var calculatedFloorArea
+
 	var v = function( x, y, z ){ return new THREE.Vector3( x, y, z ); };
 	var v2 = function( x, y ){ return new THREE.Vector2( x, y ); };
 	var pi = Math.PI;
@@ -260,12 +262,6 @@
 
 			floorArea = buildingArea/numFloors
 
-
-
-			console.log(a)
-			console.log(b)
-
-			console.log(thickness)
 		}
 
 		function updateThicknessHshape(lengthLocal,widthLocal)
@@ -379,11 +375,13 @@
 		let newfloorArea
 		let newNumOfFloors
 
-		function calculateThickness(buildingShape,floorArea,lengthLocal,widthLocal)
+		function calculateThicknessArea(buildingShape,floorArea,lengthLocal,widthLocal)
 		{
 			switch (buildingShape)
 			{
 				case buildingShapes.Lshape:
+
+					console.log("Calculating L-shape")
 
 					a = (lengthLocal+widthLocal)/2
 
@@ -391,19 +389,19 @@
 
 					thickness = a-b
 
-					console.log(thickness)
+					calculatedFloorArea = (widthLocal*thickness)+((lengthLocal-thickness)*thickness)
 
 					break;
 
 				case buildingShapes.Hshape:
-
-
 
 					a = (lengthLocal+2*widthLocal)/4
 
 					b = Math.sqrt(Math.pow(a,2)-floorArea/2)
 
 					thickness = a-b
+
+					calculatedFloorArea = "No formula yet"
 
 					break;
 				case buildingShapes.Tshape:
@@ -413,6 +411,8 @@
 					b = Math.sqrt(Math.pow(a,2)-floorArea)
 
 					thickness = a-b
+
+					calculatedFloorArea = (thickness*lengthLocal)+(thickness*(widthLocal-thickness))
 
 					break;
 
@@ -427,6 +427,8 @@
 					widthMax = floorArea/lengthLocal
 
 					widthMin = floorArea/parseFloat(lengthLocal);
+
+					calculatedFloorArea = widthLocal*lengthLocal
 
 					thickness = "NA"
 
@@ -491,9 +493,9 @@
 
 						/// Length min and max????
 
-						widthMax = floorArea/lengthLocal
+						widthMax = Math.sqrt(floorArea*10);
 
-						widthMin = floorArea/parseFloat(lengthLocal);
+						widthMin = Math.sqrt(floorArea/10);
 
 						thickness = "NA"
 
@@ -522,7 +524,7 @@
 
 				minmax = calculateMinMax(buildingShape,newFloorArea,lengthLocal,widthLocal)
 
-				calculateThickness(buildingShape,newFloorArea,lengthLocal,widthLocal)
+				calculateThicknessArea(buildingShape,newFloorArea,lengthLocal,widthLocal,thickness)
 
 				localLengthMax = minmax[0]
 				localLengthMin = minmax[1]
@@ -547,7 +549,7 @@
 
 				minmax = calculateMinMax(buildingShape,newFloorArea,lengthLocal,widthLocal)
 
-				calculateThickness(buildingShape,newFloorArea,lengthLocal,widthLocal)
+				calculateThicknessArea(buildingShape,newFloorArea,lengthLocal,widthLocal,thickness)
 
 				localLengthMax = minmax[0]
 				localLengthMin = minmax[1]
@@ -562,7 +564,6 @@
 
 				lengthLocal = parseFloat(inpLength.value)
 
-
 				factor = (width-widthMin)/(widthMax-widthMin)
 
 				floorArea = buildingArea/numFloors
@@ -574,9 +575,19 @@
 				localWidthMax = minmax[2]
 				localWidthMin = minmax[3]
 
-				widthLocal = factor*(localWidthMax-localWidthMin)+localWidthMin
+				if (buildingShape == buildingShapes.Boxshape)
+				{
+					widthLocal = floorArea/lengthLocal
+
+					calculateThicknessArea(buildingShape,floorArea,lengthLocal,widthLocal,thickness)
+				}
+				else {
+					widthLocal = factor*(localWidthMax-localWidthMin)+localWidthMin
+				}
+
 				// Must re-calculate thickness for length change
-				calculateThickness(buildingShape,floorArea,lengthLocal,widthLocal)
+
+				calculateThicknessArea(buildingShape,floorArea,lengthLocal,widthLocal,thickness)
 
 				break;
 
@@ -586,14 +597,20 @@
 
 				lengthLocal = length
 
-				widthLocal = parseFloat(inpWidth.value)
+				if (buildingShape == buildingShapes.Boxshape)
+				{
+					widthLocal = width
+				}
+				else {
+					widthLocal = parseFloat(inpWidth.value)
+				}
 
 				localLengthMax = lengthMax
 				localLengthMin = lengthMin
 				localWidthMax = widthMax
 				localWidthMin = widthMin
 
-				calculateThickness(buildingShape,floorArea,length,widthLocal)
+				calculateThicknessArea(buildingShape,floorArea,length,widthLocal)
 
 				break;
 
@@ -638,7 +655,7 @@
 
 					minmax = calculateMinMax(buildingShape,floorArea,lengthLocal,widthLocal)
 
-					calculateThickness(buildingShape,floorArea,lengthLocal,widthLocal)
+					calculateThicknessArea(buildingShape,floorArea,lengthLocal,widthLocal)
 
 					localLengthMax = minmax[0]
 					localLengthMin = minmax[1]
@@ -666,8 +683,9 @@
 			'building Area: ' + inpArea.value + '<br>' +
 			'number of Floors: ' + inpFloors.value + '<br>' +
 			'floor Area: ' + parseFloat(inpArea.value)/parseFloat(inpFloors.value) + '<br>' +
+			'<b>calculated floor Area: ' + calculatedFloorArea + '</b><br>' +
 			'<br>' +
-			'<b>Length</b><br>' +
+			'<b>Length<br></b>' +
 			'length: ' + values.length + '<br>' +
 			'lengthMin: ' + values.lengthMin + '<br>' +
 			'lengthMax: ' + values.lengthMax + '<br>' +
@@ -716,6 +734,7 @@
 
 	function implementUserChange(typeUserChange,buildingShape)
 	{
+
 		// Promise chaining taken from - https://javascript.info/promise-chaining
 		new Promise(function(resolve,reject)
 		{
@@ -724,7 +743,7 @@
 		})
 		.then(function(values)
 			{
-				console.log(values)
+
 				/// Update text on sliders
 				updateTextInput(values.length,"lengthSlider")
 				updateTextInput(values.width,'widthSlider')
