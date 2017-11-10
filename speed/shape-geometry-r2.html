@@ -260,11 +260,7 @@
 
 			floorArea = buildingArea/numFloors
 
-			a = (lengthLocal+widthLocal)/2
 
-			b = Math.sqrt(Math.pow(a,2)-floorArea)
-
-			thickness = a-b
 
 			console.log(a)
 			console.log(b)
@@ -279,27 +275,6 @@
 			numFloors = parseInt(inpFloors.value)
 
 			floorArea = buildingArea/numFloors
-
-			a = (lengthLocal+2*widthLocal)/4
-
-			b = Math.sqrt(Math.pow(a,2)-floorArea/2)
-
-			thickness = a-b
-		}
-
-		function updateThicknessTshape(lengthLocal,widthLocal)
-		{
-			buildingArea = parseFloat(inpArea.value)
-
-			numFloors = parseInt(inpFloors.value)
-
-			floorArea = buildingArea/numFloors
-
-			a = (lengthLocal+widthLocal)/2
-
-			b = Math.sqrt(Math.pow(a,2)-floorArea)
-
-			thickness = a-b
 		}
 
 		/// Implemented using the table in Geometry Logic map
@@ -400,6 +375,61 @@
 		let newfloorArea
 		let newNumOfFloors
 
+		function calculateThickness(buildingShape,floorArea,lengthLocal,widthLocal)
+		{
+			switch (buildingShape)
+			{
+				case buildingShapes.Lshape:
+
+					a = (lengthLocal+widthLocal)/2
+
+					b = Math.sqrt(Math.pow(a,2)-floorArea)
+
+					thickness = a-b
+
+					console.log(thickness)
+
+					break;
+
+				case buildingShapes.Hshape:
+
+					a = (lengthLocal+2*widthLocal)/4
+
+					b = Math.sqrt(Math.pow(a,2)-floorArea/2)
+
+					thickness = a-b
+
+					break;
+				case buildingShapes.Tshape:
+
+					a = (lengthLocal+widthLocal)/2
+
+					b = Math.sqrt(Math.pow(a,2)-floorArea)
+
+					thickness = a-b
+
+					break;
+
+				case buildingShapes.Boxshape:
+
+					lengthMax = Math.sqrt(floorArea*10);
+
+					lengthMin = Math.sqrt(floorArea/10);
+
+					/// Length min and max????
+
+					widthMax = floorArea/lengthLocal
+
+					widthMin = floorArea/parseFloat(lengthLocal);
+
+					thickness = "NA"
+
+					break;
+				default:
+					return reject('Building type enum does not exist!');
+			}
+		}
+
 		function calculateMinMax(buildingShape,floorArea,lengthLocal,widthLocal)
 		{
 				switch (buildingShape)
@@ -416,8 +446,7 @@
 						widthMax =  10*(floorArea/parseFloat(lengthLocal))-0.9*parseFloat(lengthLocal);
 
 						widthMin = floorArea/parseFloat(lengthLocal);
-						console.log("running thickness here")
-						updateThicknessLshape(lengthLocal,widthLocal);
+
 
 						return [lengthMax,lengthMin,widthMax,widthMin]
 
@@ -433,8 +462,6 @@
 
 						widthMin = floorArea/parseFloat(lengthLocal);
 
-						updateThicknessHshape(lengthLocal,widthLocal);
-
 						return [lengthMax,lengthMin,widthMax,widthMin]
 
 						break;
@@ -447,8 +474,6 @@
 						widthMax =  10*(floorArea/parseFloat(lengthLocal))-0.9*parseFloat(lengthLocal);
 
 						widthMin = floorArea/parseFloat(lengthLocal);
-
-						updateThicknessTshape(lengthLocal,widthLocal)
 
 						return [lengthMax,lengthMin,widthMax,widthMin]
 
@@ -492,6 +517,8 @@
 
 				minmax = calculateMinMax(buildingShape,newFloorArea,lengthLocal,widthLocal)
 
+				calculateThickness(buildingShape,newFloorArea,lengthLocal,widthLocal)
+
 				localLengthMax = minmax[0]
 				localLengthMin = minmax[1]
 				localWidthMax = minmax[2]
@@ -514,6 +541,8 @@
 				newFloorArea = buildingArea/newNumOfFloors
 
 				minmax = calculateMinMax(buildingShape,newFloorArea,lengthLocal,widthLocal)
+
+				calculateThickness(buildingShape,newFloorArea,lengthLocal,widthLocal)
 
 				localLengthMax = minmax[0]
 				localLengthMin = minmax[1]
@@ -540,6 +569,8 @@
 				localWidthMin = minmax[3]
 
 				widthLocal = factor*(localWidthMax-localWidthMin)+localWidthMin
+				// Must re-calculate thickness for length change
+				calculateThickness(buildingShape,floorArea,lengthLocal,widthLocal)
 
 				break;
 
@@ -558,6 +589,8 @@
 					widthLocal = Math.sqrt(floorArea*1.8)
 
 					minmax = calculateMinMax(buildingShape,floorArea,lengthLocal,widthLocal)
+
+					calculateThickness(buildingShape,floorArea,lengthLocal,widthLocal)
 
 					localLengthMax = minmax[0]
 					localLengthMin = minmax[1]
