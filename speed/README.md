@@ -2,6 +2,8 @@
 
 # SPEED Spec Read Me
 
+This is where all the code for the SPEED web GUI visualizations will be kept
+
 ### Full screen: [Adjacent Buildings]( https://antonszilasi.github.io/spiderAnton/speed/adjacent-buildings.html )
 
 ### Full Screen: [Shape Geometry]( https://antonszilasi.github.io/spiderAnton/speed/shape-geometry.html)
