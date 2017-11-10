@@ -278,9 +278,11 @@
 		}
 
 		/// Implemented using the table in Geometry Logic map
-		function changeBuildingShape(buildingShape = selShape.value)
+		function changeBuildingShape(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
+
 			// Strangely in slider the values are stored as strings we need to make sure that they are parsed as numbers before used
+
 			implementUserChange(userChange.buildingShape,buildingShape)
 
 		}
@@ -292,6 +294,8 @@
 
 		function changeBuildingArea(buildingShape = stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 		{
+
+
 			implementUserChange(userChange.buildingArea,buildingShape)
 		}
 
@@ -393,6 +397,8 @@
 
 				case buildingShapes.Hshape:
 
+
+
 					a = (lengthLocal+2*widthLocal)/4
 
 					b = Math.sqrt(Math.pow(a,2)-floorArea/2)
@@ -446,7 +452,6 @@
 						widthMax =  10*(floorArea/parseFloat(lengthLocal))-0.9*parseFloat(lengthLocal);
 
 						widthMin = floorArea/parseFloat(lengthLocal);
-
 
 						return [lengthMax,lengthMin,widthMax,widthMin]
 
@@ -557,6 +562,7 @@
 
 				lengthLocal = parseFloat(inpLength.value)
 
+
 				factor = (width-widthMin)/(widthMax-widthMin)
 
 				floorArea = buildingArea/numFloors
@@ -576,17 +582,59 @@
 
 			case userChange.widthChange:
 
+				floorArea = buildingArea/numFloors
+
+				lengthLocal = length
+
 				widthLocal = parseFloat(inpWidth.value)
+
+				localLengthMax = lengthMax
+				localLengthMin = lengthMin
+				localWidthMax = widthMax
+				localWidthMin = widthMin
+
+				calculateThickness(buildingShape,floorArea,length,widthLocal)
 
 				break;
 
 			case userChange.buildingShape:
 
 					floorArea = buildingArea/numFloors
+					// Calculate Length and Width for each shape
+					switch (buildingShape)
+					{
+						case buildingShapes.Lshape:
 
-					lengthLocal = Math.sqrt(floorArea*1.8)
+							lengthLocal = Math.sqrt(floorArea*1.8)
 
-					widthLocal = Math.sqrt(floorArea*1.8)
+							widthLocal = Math.sqrt(floorArea*1.8)
+
+							break;
+
+						case buildingShapes.Hshape:
+
+							lengthLocal = Math.sqrt(floorArea*(9/7))
+
+							widthLocal = Math.sqrt(floorArea*(9/7))
+
+							break;
+						case buildingShapes.Tshape:
+
+							lengthLocal = Math.sqrt(floorArea*1.8)
+
+							widthLocal = Math.sqrt(floorArea*1.8)
+
+							break;
+						case buildingShapes.Boxshape:
+
+							lengthLocal = Math.sqrt(floorArea)
+
+							widthLocal = floorArea/lengthLocal
+
+							break;
+						default:
+							return reject('Building type enum does not exist!');
+					}
 
 					minmax = calculateMinMax(buildingShape,floorArea,lengthLocal,widthLocal)
 
@@ -597,9 +645,9 @@
 					localWidthMax = minmax[2]
 					localWidthMin = minmax[3]
 
-				case userChange.irrevelent:
-					factorChange = 1
-					break;
+			case userChange.irrevelent:
+				factorChange = 1
+				break;
 
 			default:
 				return reject('Type of user change doesnt exist');
@@ -676,6 +724,7 @@
 		})
 		.then(function(values)
 			{
+				console.log(values)
 				/// Update text on sliders
 				updateTextInput(values.length,"lengthSlider")
 				updateTextInput(values.width,'widthSlider')
