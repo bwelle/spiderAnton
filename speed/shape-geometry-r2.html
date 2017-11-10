@@ -60,7 +60,7 @@
 		<table>
 
 			<tr>
-				<td>Building Area</td><td># of Floors</td><td>Floor Area</td><td>Floor Height</td><td># of Footprint Shapes</td>
+				<td>Building Area</td><td># of Floors</td><td>Floor Area</td><td>Floor Height</td><td># of Footprint Shapes (does nothing)</td>
 			</tr>
 
 			<tr>
@@ -76,7 +76,7 @@
 		<table>
 
 			<tr>
-				<td>Footprint Shape</td><td>Massing Generator</td><td>Perimeter Depth</td><td>Orientation</td>
+				<td>Footprint Shape</td><td>Massing Generator(does nothing)</td><td>Perimeter Depth(does nothing)</td><td>Orientation(does nothing)</td>
 			</tr>
 
 			<tr>
@@ -401,7 +401,8 @@
 
 					thickness = a-b
 
-					calculatedFloorArea = "No formula yet"
+					/// the thickness of the middle part of the H-shape is equal to thickness
+					calculatedFloorArea = (2*widthLocal*thickness)+(thickness*(lengthLocal-2*thickness))
 
 					break;
 				case buildingShapes.Tshape:
