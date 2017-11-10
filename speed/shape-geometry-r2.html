@@ -252,7 +252,7 @@
     	return Math.round(num*2)/2;
 		}
 
-		function updateThicknessLshape()
+		function updateThicknessLshape(lengthLocal,widthLocal)
 		{
 			buildingArea = parseFloat(inpArea.value)
 
@@ -260,14 +260,19 @@
 
 			floorArea = buildingArea/numFloors
 
-			a = (parseFloat(inpWidth.value)+parseFloat(inpLength.value))/2
+			a = (lengthLocal+widthLocal)/2
 
 			b = Math.sqrt(Math.pow(a,2)-floorArea)
 
 			thickness = a-b
+
+			console.log(a)
+			console.log(b)
+
+			console.log(thickness)
 		}
 
-		function updateThicknessHshape()
+		function updateThicknessHshape(lengthLocal,widthLocal)
 		{
 			buildingArea = parseFloat(inpArea.value)
 
@@ -275,14 +280,14 @@
 
 			floorArea = buildingArea/numFloors
 
-			a = (parseFloat(inpLength.value)+2*parseFloat(inpWidth.value))/4
+			a = (lengthLocal+2*widthLocal)/4
 
 			b = Math.sqrt(Math.pow(a,2)-floorArea/2)
 
 			thickness = a-b
 		}
 
-		function updateThicknessBoxshape()
+		function updateThicknessTshape(lengthLocal,widthLocal)
 		{
 			buildingArea = parseFloat(inpArea.value)
 
@@ -290,14 +295,17 @@
 
 			floorArea = buildingArea/numFloors
 
-			// thickness
+			a = (lengthLocal+widthLocal)/2
+
+			b = Math.sqrt(Math.pow(a,2)-floorArea)
+
+			thickness = a-b
 		}
 
 		/// Implemented using the table in Geometry Logic map
 		function changeBuildingShape(buildingShape = selShape.value)
 		{
 			// Strangely in slider the values are stored as strings we need to make sure that they are parsed as numbers before used
-
 			implementUserChange(userChange.buildingShape,buildingShape)
 
 		}
@@ -381,21 +389,6 @@
 
 	}
 
-	function setSliderValues(values)
-	{ /// General method for setting sliderValues
-
-		console.log(width)
-		console.log(length)
-
-		console.log(lengthMax)
-
-		console.log(lengthMin)
-
-		return new Promise(function(resolve,reject){
-			resolve(values)
-		})
-	}
-
 	function doCalculations(resolve,reject,typeUserChange,buildingShape)
 	{ //// General method for doing calculations
 
@@ -407,7 +400,7 @@
 		let newfloorArea
 		let newNumOfFloors
 
-		function calculateMinMax(buildingShape,floorArea,lengthLocal)
+		function calculateMinMax(buildingShape,floorArea,lengthLocal,widthLocal)
 		{
 				switch (buildingShape)
 				{
@@ -423,6 +416,8 @@
 						widthMax =  10*(floorArea/parseFloat(lengthLocal))-0.9*parseFloat(lengthLocal);
 
 						widthMin = floorArea/parseFloat(lengthLocal);
+						console.log("running thickness here")
+						updateThicknessLshape(lengthLocal,widthLocal);
 
 						return [lengthMax,lengthMin,widthMax,widthMin]
 
@@ -438,6 +433,8 @@
 
 						widthMin = floorArea/parseFloat(lengthLocal);
 
+						updateThicknessHshape(lengthLocal,widthLocal);
+
 						return [lengthMax,lengthMin,widthMax,widthMin]
 
 						break;
@@ -450,6 +447,8 @@
 						widthMax =  10*(floorArea/parseFloat(lengthLocal))-0.9*parseFloat(lengthLocal);
 
 						widthMin = floorArea/parseFloat(lengthLocal);
+
+						updateThicknessTshape(lengthLocal,widthLocal)
 
 						return [lengthMax,lengthMin,widthMax,widthMin]
 
@@ -465,6 +464,8 @@
 						widthMax = floorArea/lengthLocal
 
 						widthMin = floorArea/parseFloat(lengthLocal);
+
+						thickness = "NA"
 
 						return [lengthMax,lengthMin,widthMax,widthMin]
 
@@ -489,7 +490,7 @@
 
 				newFloorArea = newbuildingArea/numFloors
 
-				minmax = calculateMinMax(buildingShape,newFloorArea,lengthLocal)
+				minmax = calculateMinMax(buildingShape,newFloorArea,lengthLocal,widthLocal)
 
 				localLengthMax = minmax[0]
 				localLengthMin = minmax[1]
@@ -505,8 +506,6 @@
 				newNumOfFloors = parseFloat(inpFloors.value)
 
 				factorChange = numFloors/newNumOfFloors
-				console.log("Factor change")
-				console.log(factorChange)
 
 				lengthLocal = Math.sqrt(factorChange)*length
 
@@ -514,7 +513,7 @@
 
 				newFloorArea = buildingArea/newNumOfFloors
 
-				minmax = calculateMinMax(buildingShape,newFloorArea,lengthLocal)
+				minmax = calculateMinMax(buildingShape,newFloorArea,lengthLocal,widthLocal)
 
 				localLengthMax = minmax[0]
 				localLengthMin = minmax[1]
@@ -533,7 +532,7 @@
 
 				floorArea = buildingArea/numFloors
 				//[lengthMax,lengthMin,widthMax,widthMin]
-				minmax = calculateMinMax(buildingShape,floorArea,lengthLocal)
+				minmax = calculateMinMax(buildingShape,floorArea,lengthLocal,widthLocal)
 
 				localLengthMax = minmax[0]
 				localLengthMin = minmax[1]
@@ -558,7 +557,7 @@
 
 					widthLocal = Math.sqrt(floorArea*1.8)
 
-					minmax = calculateMinMax(buildingShape,floorArea,lengthLocal)
+					minmax = calculateMinMax(buildingShape,floorArea,lengthLocal,widthLocal)
 
 					localLengthMax = minmax[0]
 					localLengthMin = minmax[1]
@@ -647,7 +646,7 @@
 				/// Update text on sliders
 				updateTextInput(values.length,"lengthSlider")
 				updateTextInput(values.width,'widthSlider')
-				//Update stored values
+				//Update stored values and slider values
 
 				inpWidth.max = values.widthMax
 				widthMax = values.widthMax
@@ -667,15 +666,13 @@
 				inpLength.value = values.length
 				length = values.length
 
-				console.log(inpLength.value)
-
 				return values
 			})
 			.then(function(values)
-			{
-				// Update the shape / display all the values
-				updateShape(values)
-			}
+				{
+					// Update the shape + display all the values
+					updateShape(values)
+				}
 			)
 	}
 
