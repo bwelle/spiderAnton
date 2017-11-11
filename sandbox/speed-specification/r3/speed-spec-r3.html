@@ -154,37 +154,28 @@
 
 				</div>
 
-
-
 				<div id = "divAdjacentBuildings" >
 
 					<h2>
 						Adjacent Buildings
-						<a href=https://github.com/ladybug-tools/spider/blob/master/sandbox/speed-specification/r2/adjacent-buildings.js target="_top"><img src="https://status.github.com/images/invertocat.png" height=25 ></a>
 					</h2>
 
 					<div id = "divAdjacentBuildingsTable" ></div>
 
 				</div>
-
-
-
 				<div id = "divGeometry" >
 
 					<h2>
-						Geometry
-						<a href=https://github.com/ladybug-tools/spider/blob/master/sandbox/speed-specification/r2/geometry.js target="_top"><img src="https://status.github.com/images/invertocat.png" height=25 ></a>
+						Shape Geometry
 					</h2>
-
 					<table>
-
 						<tr>
-							<td>Building Area</td><td># of Floors</td><td>Floor Area</td><td>Floor Height</td><td># of Footprint Shapes</td>
+							<td>Building Area</td><td># of Floors</td><td>Floor Area</td><td>Floor Height (atm does nothing)</td><td># of Footprint Shapes (atm does nothing)</td>
 						</tr>
 
 						<tr>
-							<td><input type=number id=inpArea step=50 onchange=updateShape(); ></td>
-							<td><input type=number id=inpFloors onchange=updateShape();onShapeChangeUpdateLayout(); ></td>
+							<td><input type=number id=inpArea step=50 onchange=changeBuildingArea(); ></td>
+							<td><input type=number id=inpFloors onchange=changeNumFloors(); ></td>
 							<td><output type=number id=outFloorArea ></output></td>
 							<td><input type=number id=inpHeight onChange=updateShape(); ></td>
 							<td><input type=number id=inpShapeCount ></td>
@@ -193,13 +184,12 @@
 					</table>
 
 					<table>
-
 						<tr>
-							<td>Footprint Shape</td><td>Massing Generator</td><td>Perimeter Depth</td><td>Orientation</td>
+							<td>Footprint Shape</td><td>Massing Generator (atm does nothing)</td><td>Perimeter Depth (atm does nothing)</td><td>Orientation</td>
 						</tr>
 
 						<tr>
-							<td><select id=selShape size=4 onchange=updateShape('OK'); ></select></td>
+							<td><select id=selShape size=4 onchange=changeBuildingShape(); ></select></td>
 							<td><select id=selMassing ></select></td>
 							<td><input type=number id=inpPerimeterDepth oninput=updateShape(this); ></td>
 							<td><input type=number id=inpOrientation oninput=updateShape(this); ></td>
@@ -209,21 +199,16 @@
 
 					<div id=divDimensions style=max-width:300px; >
 
-						<p>Footprint dimensions</p>
+						<p><b>Footprint dimensions</b></p>
 
 						<div>
 							Length <output id=outLength class=floatright ></output>
-							<input type=range id=inpLength oninput=updateShape(); >
+							<input type=range id=inpLength oninput=changeLengthSlider(); >
 						</div>
 
 						<div>
 							Width <output id=outWidth class=floatright ></output>
-							<input type=range id=inpWidth oninput=updateShape(); >
-						</div>
-
-						<div id=divThickness >
-							Thickness <output id=outThickness class=floatright ></output>
-							<input type=range id=inpThickness onchange=updateShape(); >
+							<input type=range id=inpWidth oninput=changeWidthSlider(); >
 						</div>
 
 						<div id=divValidation ><p style=color:red; ><i>Select a shape...</i></p></div>
@@ -231,15 +216,10 @@
 					</div>
 
 				</div>
-
-
-
-
 				<div id = "divEnvelope" >
 
 					<h2>
 						Envelope
-						<a href=https://github.com/ladybug-tools/spider/blob/master/sandbox/speed-specification/r2/envelope.js target="_top"><img src="https://status.github.com/images/invertocat.png" height=25 ></a>
 					</h2>
 
 					<table>
@@ -252,19 +232,6 @@
 							<td><input type=number id=inpOverhangDepth onchange=updateOpenings(); ></td>
 							<td><input type=number id=inpFinDepth onchange=updateOpenings(); ></td>
 						</tr>
-
-<!--
-// Hi Anton!
-<td>window proportions</td><td>wwrs</td><td>wwre</td><td>wwrw</td><td>wwrn</td><td># of Windows</td>
-
-					<td><input type=number id=windowPreportions oninput=updateShape(this);></td>
-					<td><input type=number id=wwrs oninput=updateShape(this);></td>
-					<td><input type=number id=wwre oninput=updateShape(this);></td>
-					<td><input type=number id=wwrw oninput=updateShape(this);></td>
-					<td><input type=number id=wwrn oninput=updateShape(this);></td>
-					<td><input type=number id=numWindows oninput=updateShape(this);></td>
--->
-
 					</table>
 
 					<table>
@@ -280,8 +247,6 @@
 					</table>
 
 				</div>
-
-
 
 				<div id = "divSpaceLayout" >
 
@@ -317,8 +282,6 @@
 
 				</div>
 
-
-
 				<div id = "divExportGbxml" >
 
 					<h2>
@@ -335,12 +298,7 @@
 					<div id = divExportContent ></div>
 
 				</div>
-
-
-
 			</div>
-
-
 			<canvas id="canvasOrtho" height=300 width=300 ></canvas>
 
 			<canvas id="canvasPerspective" height=300 width=300 style=float:right; ></canvas>
@@ -352,7 +310,7 @@
 
 	<div id="hamburger" onclick=toggleNav(); >
 
-		slide &#9776; 
+		slide &#9776;
 
 	</div>
 

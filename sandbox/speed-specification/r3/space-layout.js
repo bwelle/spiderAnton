@@ -22,8 +22,6 @@
 
 	function onShapeChangeUpdateLayout(){
 
-		imgShape.src = '../images/' + selShape.value;
-
 		inpFloorStart.max = theBuilding.storeys;
 		inpFloorEnd.max = theBuilding.storeys;
 
@@ -168,4 +166,3 @@
 		tabUsage.innerHTML = txt;
 
 	}
-

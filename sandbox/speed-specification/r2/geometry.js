@@ -26,7 +26,6 @@
 		theBuilding.orientation = 0;
 		theBuilding.perimeterDepth = 15;
 
-
 		inpArea.value = theBuilding.area;
 
 		inpFloors.min = 1;
@@ -72,10 +71,6 @@
 		inpWidth.min = 2 * theBuilding.perimeterDepth + 4;
 		inpWidth.max = 300;
 		inpWidth.value = theBuilding.width;
-
-		inpThickness.min = 1;
-		inpThickness.max = 100;
-		inpThickness.value = theBuilding.thickness;
 
 //console.log( 'theBuilding', theBuilding );
 
@@ -258,90 +253,7 @@
 
 	function getPathL() {
 
-		let area = theBuilding.area;
-		let flr = theBuilding.storeys;
-		let len = theBuilding.length;
-		let wid = theBuilding.width;
-		let thk = theBuilding.thickness;
-
-// trying to set a default fail. ditto below
-		if ( theBuilding.lengthInit === 0 ) {
-
-			inpLength.value = 120;
-
-		}
-
-		if ( area !== parseInt( inpArea.value, 10 ) || flr !== parseInt( inpFloors.value, 10 ) ) {
-
-			const areaNew = parseInt( inpArea.value, 10 )
-			const flrNew = parseInt( inpFloors.value, 10 );
-			const areaTemp = area * flrNew / flr;
-			const ratio = Math.sqrt( area / areaTemp );
-
-			flr = flrNew;
-			len = Math.round( ratio * len );
-			wid = ( ( area - thk * len ) / thk + thk ) / flr;
-
-			theBuilding.area = areaNew;
-			theBuilding.storeys = flr;
-			theBuilding.length = theBuilding.lengthInit = len;
-			theBuilding.width = wid;
-
-			inpLength.value = len;
-			inpWidth.value = wid;
-
-		} else if ( len !== parseInt( inpLength.value, 10 ) ) {
-
-			len = parseInt( inpLength.value, 10 );
-			wid = ( ( area - thk * len ) / thk + thk ) / flr;
-			theBuilding.length = theBuilding.lengthInit = len;
-			theBuilding.width = wid;
-			inpWidth.value = wid;
-
-		} else if ( wid !== parseInt( inpWidth.value, 10 ) ) {
-
-			wid = parseInt( inpWidth.value, 10 );
-			len = ( area - thk * ( wid - thk ) ) / ( thk * flr );
-
-			theBuilding.length = theBuilding.lengthInit = len;
-			theBuilding.width = wid;
-
-			inpLength.value = len;
-
-		} else if ( thk !== parseInt( inpThickness.value, 10 ) ) {
-
-			thk = parseInt( inpThickness.value, 10 );
-			theBuilding.thickness = thk;
-
-			wid = ( ( area - thk * len ) / thk + thk ) / flr;
-			theBuilding.width = wid;
-			inpWidth.value = wid;
-
-		}
-
-		const pathL = [
-			v2( len, 0 ),
-			v2( 0, 0 ),
-			v2( 0, wid ),
-			v2( thk, wid ),
-			v2( thk, thk ),
-			v2( len, thk ),
-			v2( len, 0 )
-		];
-
-
-		divValidation.innerHTML =
-			'<p>Validations</p>' +
-			'<p>Calculated Area: ' + flr * ( thk * len + thk * ( wid - thk ) ) + '<p>' +
-			'<p>Equations used</p>' +
-			'<p>Area = numberOffloors * ( thickness * length + thickness * ( width - thickness ) )</p>' +
-			'<p>Width = ( ( area - thickness * length ) / thickness + thickness ) / numberOfFloors</p>' +
-			'<p>Frame: ' + renderer.info.render.frame + '</p>' +
-		'';
-
-		divThickness.style.display = '';
-
-		return pathL;
+		
 
 	}
 
@@ -791,6 +703,3 @@
 		return v( x, y, 0 );
 
 	}
-
-
-
