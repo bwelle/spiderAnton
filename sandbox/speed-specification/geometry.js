@@ -22,6 +22,8 @@
 
 	var calculatedFloorArea
 
+	var numberOfWindows
+
 	const buildingShapes =
 {
 	"Lshape":0,
@@ -510,6 +512,7 @@ const userChange =
 		inpOrientation.step = 10;
 		inpOrientation.value = theBuilding.orientation;
 
+		numberOfWindows = 5;
 		// Assign global variabless
 		buildingArea = parseFloat(inpArea.value)
 		numFloors = parseInt(inpFloors.value)
@@ -790,7 +793,7 @@ const userChange =
 
 				speedWindowLogic = new Speed();
 				//console.log("#### A new set of windows ####")
-				speedWindowLogic.windowVertices(len,hgt,0.5,5).map( windowVertices => {
+				speedWindowLogic.windowVertices(len,hgt,0.5,numberOfWindows).map( windowVertices => {
 
 					// Create the geometry of each window
 					const geo = new THREE.PlaneBufferGeometry(Math.abs(windowVertices[0].x-windowVertices[2].x),Math.abs(windowVertices[0].z-windowVertices[2].z));
@@ -798,12 +801,10 @@ const userChange =
 					const open = new THREE.Mesh( geo, materialNormal );
 
 					geo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) );
-					console.log(vertices[ 1 ][ i ].clone().lerp( vertices[ 2 ][ i + 1 ].clone(), 0.5 ))
+
 					open.position.copy( vertices[ 1 ][ i ].clone().lerp( vertices[ 2 ][ i + 1 ].clone(), 0.5 ) );
-					//console.log(open.position.x)
-					//console.log(open.position.y)
-					//console.log(len05)
-					//console.log(wid05)
+
+					// How to incrementally change the
 					open.position.x -= len05
 					open.position.y -= wid05
 					open.rotation.z = angle;
