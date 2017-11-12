@@ -68,9 +68,6 @@
 
 	}
 
-
-
-
 	function drawPlacard( text, scale, color, x, y, z ) {
 
 		// 2016-02-27 ~ https://github.com/jaanga/jaanga.github.io/tree/master/cookbook-threejs/examples/placards

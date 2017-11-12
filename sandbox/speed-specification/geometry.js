@@ -775,13 +775,11 @@ const userChange =
 				const vectorDelta = pt2.clone().sub( pt1 );
 				const angle = Math.atan2( vectorDelta.y, vectorDelta.x );
 
-			//theBuilding.overhangDepth = 10;
-
 				if ( theBuilding.overhangDepth > 0 ) {
 
 					const geoOver = new THREE.PlaneBufferGeometry( 1, 1 );
 					const over = new THREE.Mesh( geoOver, materialShape );
-					over.scale.set( len * theBuilding.wwr / 100, theBuilding.overhangDepth, theBuilding.overhangDepth );
+					//over.scale.set( len * theBuilding.wwr / 100, theBuilding.overhangDepth, theBuilding.overhangDepth );
 					over.position.copy( vertices[ 1 ][ i ].clone().lerp( vertices[ 2 ][ i + 1 ].clone() , 0.5 ) );
 					over.position.x -= len05;
 					over.position.y -= wid05;
@@ -793,28 +791,33 @@ const userChange =
 
 				}
 
-				const geo = new THREE.PlaneBufferGeometry( len * theBuilding.wwr / 100, hgt * theBuilding.wwr / 100 );
+				speedWindowLogic = new Speed();
 
-				const open = new THREE.Mesh( geo, materialNormal );
-				geo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) );
-				open.position.copy( vertices[ 1 ][ i ].clone().lerp( vertices[ 2 ][ i + 1 ].clone(), 0.5 ) );
-				open.position.x -= len05;
-				open.position.y -= wid05;
-				open.rotation.z = angle;
-				open.translateY( 0.1 );
-				open.name = 'opening';
-				mesh.add( open );
+				speedWindowLogic.windowVertices(len,hgt,0.5,5).map( windowVertices => {
 
+					const geo = new THREE.PlaneBufferGeometry(Math.abs(windowVertices[0].x-windowVertices[2].x),Math.abs(windowVertices[0].z-windowVertices[2].z));
 
-				if ( storey === 0 ) {
+					xPosition = Math.abs(windowVertices[0].x-windowVertices[2].x)
+					console.log(xPosition)
+					const open = new THREE.Mesh( geo, materialNormal );
 
-					//					placard = drawPlacard( ['space ' + ( i + 1 ), 'angle ' + ( - r2d * angle + 90 ) ], 0.1, 120, open.position.x, open.position.y, 40 );
-					placard = drawPlacard( 'angle ' + ( - r2d * angle + 90 ), 0.1, 120, open.position.x, open.position.y, 40 );
+					geo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) );
+					open.position.copy( vertices[ 1 ][ i ].clone().lerp( vertices[ 2 ][ i + 1 ].clone(), 0.5 ) );
+					open.position.x -= len05;
+					open.position.y -= wid05;
+					open.rotation.z = angle;
+					open.translateY( 0.1 );
+					open.name = 'opening';
+					mesh.add( open );
 
-					mesh.add( placard );
+					if ( storey === 0 ) {
+						//					placard = drawPlacard( ['space ' + ( i + 1 ), 'angle ' + ( - r2d * angle + 90 ) ], 0.1, 120, open.position.x, open.position.y, 40 );
+						placard = drawPlacard( 'angle ' + ( - r2d * angle + 90 ), 0.1, 120, open.position.x, open.position.y, 40 );
 
-				}
-
+						mesh.add( placard );
+					}
+					}
+				)
 				// needed for export?
 				shapePoints.push( pt2 );
 
