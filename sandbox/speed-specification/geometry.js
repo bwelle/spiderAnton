@@ -722,9 +722,6 @@ const userChange =
 
 	}
 
-
-// or #2
-
 	function createQlineMesh( storey ) {
 
 		const path = theBuilding.path;
@@ -781,32 +778,39 @@ const userChange =
 					const over = new THREE.Mesh( geoOver, materialShape );
 					//over.scale.set( len * theBuilding.wwr / 100, theBuilding.overhangDepth, theBuilding.overhangDepth );
 					over.position.copy( vertices[ 1 ][ i ].clone().lerp( vertices[ 2 ][ i + 1 ].clone() , 0.5 ) );
-					over.position.x -= len05;
-					over.position.y -= wid05;
+					//over.position.x = length;
+					//over.position.y = width;
 					over.rotation.z = angle;
 					over.translateY( 0.5 * theBuilding.overhangDepth );
 					over.translateZ( 0.5 * hgt * theBuilding.wwr / 100 );
 					over.name = 'overhang';
-					mesh.add( over );
+					mesh.add(over);
 
 				}
 
 				speedWindowLogic = new Speed();
-
+				//console.log("#### A new set of windows ####")
 				speedWindowLogic.windowVertices(len,hgt,0.5,5).map( windowVertices => {
 
+					// Create the geometry of each window
 					const geo = new THREE.PlaneBufferGeometry(Math.abs(windowVertices[0].x-windowVertices[2].x),Math.abs(windowVertices[0].z-windowVertices[2].z));
-
-					xPosition = Math.abs(windowVertices[0].x-windowVertices[2].x)
-					console.log(xPosition)
+					// Make it into a mesh
 					const open = new THREE.Mesh( geo, materialNormal );
 
 					geo.applyMatrix( new THREE.Matrix4().makeRotationX( Math.PI * 0.5 ) );
+					console.log(vertices[ 1 ][ i ].clone().lerp( vertices[ 2 ][ i + 1 ].clone(), 0.5 ))
 					open.position.copy( vertices[ 1 ][ i ].clone().lerp( vertices[ 2 ][ i + 1 ].clone(), 0.5 ) );
-					open.position.x -= len05;
-					open.position.y -= wid05;
+					//console.log(open.position.x)
+					//console.log(open.position.y)
+					//console.log(len05)
+					//console.log(wid05)
+					open.position.x -= len05
+					open.position.y -= wid05
 					open.rotation.z = angle;
-					open.translateY( 0.1 );
+					//open.translateY( 0.1 );
+
+					vector = new THREE.Vector3(open.position.x,open.position.y,angle)
+
 					open.name = 'opening';
 					mesh.add( open );
 
@@ -820,9 +824,7 @@ const userChange =
 				)
 				// needed for export?
 				shapePoints.push( pt2 );
-
 			}
-
 		}
 
 		const shape = new THREE.Shape( path );

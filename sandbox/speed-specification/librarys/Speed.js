@@ -113,17 +113,6 @@ class BoxShape extends Shape{
   }
 }
 
-var vertex = class {
-  constructor(x,y,z)
-  {
-    this.x = x;
-    this.y = y;
-    this.z = z;
-  }
-};
-
-
-
 class Speed{
   constructor(){}
   windowVertices(length,height,wwr,windowCount,horizontality=0.5){
@@ -131,7 +120,7 @@ class Speed{
       // Loop through each window
       return window.map( point => {
         // Create a x,y,z vertice and return it
-        let vertice = new vertex(point[0],point[1],point[2])
+        let vertice = v(point[0],point[1],point[2])
         return vertice
       })
     })
