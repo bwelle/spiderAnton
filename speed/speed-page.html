@@ -149,7 +149,7 @@
 				<div id = "divWelcome" >
 
 						<p>Howdy! Welcome to the visualizations for SPEED!</p>
-						
+
 				</div>
 
 				<div id = "divAdjacentBuildings" >
@@ -214,37 +214,7 @@
 					</div>
 
 				</div>
-				<div id = "divEnvelope" >
-
-					<h2>
-						Envelope
-					</h2>
-
-					<table>
-						<tr>
-							<td>building wwr %</td><td>Overhang Depth</td><td>Fin Depth</td>
-						</tr>
-
-						<tr>
-							<td><input type=number id=inpWwr onchange=updateOpenings(); ></td>
-							<td><input type=number id=inpOverhangDepth onchange=updateOpenings(); ></td>
-							<td><input type=number id=inpFinDepth onchange=updateOpenings(); ></td>
-						</tr>
-					</table>
-
-					<table>
-
-						<tr>
-							<td>Window Type</td>
-						</tr>
-
-						<tr>
-							<td><select id=selWindowType onchange=updateOpenings(); ></select></td>
-						</tr>
-
-					</table>
-
-				</div>
+				<div id = "divEnvelope"></div>
 
 				<div id = "divSpaceLayout" >
 
@@ -312,6 +282,7 @@
 
 <script>
 
+	var WWRByFacade = true
 
 	init();
 
@@ -338,8 +309,6 @@
 	}
 
 
-
-
 	function onToggleSpeedMenu( that ) {
 
 
@@ -356,9 +325,6 @@
 		divExportGbxml.style.display = that.innerText === "Export gbXML" ? '' : 'none';
 
 	}
-
-
-
 
 	function toggleNav() {
 
