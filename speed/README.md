@@ -4,10 +4,4 @@
 
 This is where all the code for the SPEED web GUI visualizations will be kept
 
-### Full screen: [Adjacent Buildings]( https://antonszilasi.github.io/spiderAnton/speed/adjacent-buildings.html )
-
-### Full Screen: [Shape Geometry]( https://antonszilasi.github.io/spiderAnton/speed/shape-geometry.html)
-
-### Full Screen: [Envelope]( https://antonszilasi.github.io/spiderAnton/speed/envelope.html )
-
-### Full Screen: [Space Layout]( https://antonszilasi.github.io/spiderAnton/speed/space-layout.html )
+### Full screen: [Adjacent Buildings]( https://antonszilasi.github.io/spiderAnton/speed/speed-page.html)
