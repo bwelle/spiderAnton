@@ -4,4 +4,4 @@
 
 This is where all the code for the SPEED web GUI visualizations will be kept
 
-### Full screen: [Adjacent Buildings]( https://antonszilasi.github.io/spiderAnton/speed/speed-page.html)
+### Full screen: [All visualizations]( https://antonszilasi.github.io/spiderAnton/speed/speed-page.html)
