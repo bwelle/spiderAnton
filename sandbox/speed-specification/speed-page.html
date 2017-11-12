@@ -177,7 +177,7 @@
 							<td><input type=number id=inpArea step=50 onchange=changeBuildingArea(); ></td>
 							<td><input type=number id=inpFloors onchange=changeNumFloors(); ></td>
 							<td><output type=number id=outFloorArea ></output></td>
-							<td><input type=number id=inpHeight onChange=updateShape(); ></td>
+							<td><input type=number id=inpHeight; ></td>
 							<td><input type=number id=inpShapeCount ></td>
 						</tr>
 
@@ -185,14 +185,14 @@
 
 					<table>
 						<tr>
-							<td>Footprint Shape</td><td>Massing Generator (atm does nothing)</td><td>Perimeter Depth (atm does nothing)</td><td>Orientation</td>
+							<td>Footprint Shape</td><td>Massing Generator (atm does nothing)</td><td>Perimeter Depth </td><td>Orientation</td>
 						</tr>
 
 						<tr>
 							<td><select id=selShape size=4 onchange=changeBuildingShape(); ></select></td>
 							<td><select id=selMassing ></select></td>
-							<td><input type=number id=inpPerimeterDepth oninput=updateShape(this); ></td>
-							<td><input type=number id=inpOrientation oninput=updateShape(this); ></td>
+							<td><input type=number id=inpPerimeterDepth oninput=changeLengthSlider(); ></td>
+							<td><input type=number id=inpOrientation oninput=changeLengthSlider(); ></td>
 						</tr>
 
 					</table>
@@ -262,8 +262,6 @@
 						<div id=divZones >Please first select a shape</div>
 
 					</div>
-
-
 					<div id = "divRightColumn" style=max-width:300px; >
 
 						<h3>Apply to floors</h3>
@@ -299,9 +297,9 @@
 
 				</div>
 			</div>
-			<canvas id="canvasOrtho" height=300 width=300 ></canvas>
+			<canvas id="canvasOrtho" height=400 width=400 ></canvas>
 
-			<canvas id="canvasPerspective" height=300 width=300 style=float:right; ></canvas>
+			<canvas id="canvasPerspective" height=400 width=400 style=float:right; ></canvas>
 
 		</div>
 

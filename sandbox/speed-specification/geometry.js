@@ -37,7 +37,8 @@ const userChange =
 	"lengthChange":2,
 	"widthChange":3,
 	"buildingShape":4,
-	"irrevelent":5
+	"perimeterDepth":5,
+	"irrevelent":6
 };
 
 
@@ -45,8 +46,6 @@ const userChange =
 	/// Helper functions
 
 	function stringOfBuildingShapeToBuildingShapeEnum(selectedShapeType){
-
-		console.log(selectedShapeType)
 
 		if (selectedShapeType === "L-Shape")
 		{
@@ -160,10 +159,6 @@ const userChange =
 		let localLengthMin,localLengthMax
 		let newfloorArea
 		let newNumOfFloors
-
-		console.log(inpArea.value)
-		console.log(length)
-		console.log(width)
 
 		function calculateThicknessArea(buildingShape,floorArea,lengthLocal,widthLocal)
 		{
@@ -404,8 +399,7 @@ const userChange =
 				break;
 
 			case userChange.buildingShape:
-					console.log(buildingArea)
-					console.log(numFloors)
+
 					floorArea = buildingArea/numFloors
 
 					// Calculate Length and Width for each shape
@@ -461,8 +455,6 @@ const userChange =
 				return reject('Type of user change doesnt exist');
 		}
 
-		console.log({length:lengthLocal,width:widthLocal,lengthMax:localLengthMax,lengthMin:localLengthMin,widthMax:localWidthMax,widthMin:localWidthMin})
-
 		return resolve({length:lengthLocal,width:widthLocal,lengthMax:localLengthMax,lengthMin:localLengthMin,widthMax:localWidthMax,widthMin:localWidthMin})
 	}
 
@@ -479,7 +471,6 @@ const userChange =
 		theBuilding.storeys = 1;
 		theBuilding.storeyHeight = 10;
 		theBuilding.orientation = 0;
-		theBuilding.perimeterDepth = 15;
 
 		inpArea.value = theBuilding.area;
 
@@ -487,9 +478,9 @@ const userChange =
 		inpFloors.max = 20;
 		inpFloors.value = theBuilding.storeys;
 
-		inpHeight.min = 8;
-		inpHeight.max = 20;
-		inpHeight.value = theBuilding.storeyHeight;
+		// inpHeight.min = 8;
+		// inpHeight.max = 20;
+		// inpHeight.value = theBuilding.storeyHeight;
 
 		inpShapeCount.min = 1;
 		inpShapeCount.max = 10;
@@ -512,25 +503,16 @@ const userChange =
 
 		inpPerimeterDepth.min = 10;
 		inpPerimeterDepth.max = 20;
-		inpPerimeterDepth.value = theBuilding.perimeterDepth;
+		inpPerimeterDepth.value = 5;
 
 		inpOrientation.min = 0;
 		inpOrientation.max = 350;
 		inpOrientation.step = 10;
 		inpOrientation.value = theBuilding.orientation;
 
-		inpLength.min =  2 * theBuilding.perimeterDepth + 4;
-		inpLength.max = 200;
-		inpLength.value = theBuilding.length;
-
-		inpWidth.min = 2 * theBuilding.perimeterDepth + 4;
-		inpWidth.max = 300;
-		inpWidth.value = theBuilding.width;
-
 		// Assign global variabless
 		buildingArea = parseFloat(inpArea.value)
 		numFloors = parseInt(inpFloors.value)
-
 
 		implementUserChange(userChange.buildingShape,stringOfBuildingShapeToBuildingShapeEnum(selShape.value))
 
@@ -542,38 +524,44 @@ const userChange =
 		outLength.value = values.length
 		outWidth.value = values.width
 
+		// divValidation.innerHTML =
+		// 	'<h3>Results from geometry logic</h3>' +
+		// 	'<font size="-5">'
+		// 	'building Area: ' + inpArea.value + '<br>' +
+		// 	'number of Floors: ' + inpFloors.value + '<br>' +
+		// 	'floor Area: ' + parseFloat(inpArea.value)/parseFloat(inpFloors.value) + '<br>' +
+		// 	'<b>calculated floor Area: ' + calculatedFloorArea + '</b><br>' +
+		// 	'<br>' +
+		// 	'<b>Length<br></b>' +
+		// 	'length: ' + values.length + '<br>' +
+		// 	'lengthMin: ' + values.lengthMin + '<br>' +
+		// 	'lengthMax: ' + values.lengthMax + '<br>' +
+		// 	//			'lengthRange(): ' + lengthRange + '<br>' +
+		// 	'<br>' +
+		// 	'<b>Width</b><br>' +
+		// 	'width: ' + values.width + '<br>' +
+		// 	'widthMin: ' + values.widthMin + '<br>' +
+		// 	'widthMax: ' + values.widthMax + '<br>' +
+		// 	'<b>thickness:'+thickness+'</b><br>' +
+		// 	//			'widthRange(): ' + widthRange + '<br>' +
+		// 	'<br>' + '</font>' +
+		// '';
+		// Display thickness
 		divValidation.innerHTML =
-			'<h3>Results from geometry logic</h3>' +
-			'building Area: ' + inpArea.value + '<br>' +
-			'number of Floors: ' + inpFloors.value + '<br>' +
-			'floor Area: ' + parseFloat(inpArea.value)/parseFloat(inpFloors.value) + '<br>' +
-			'<b>calculated floor Area: ' + calculatedFloorArea + '</b><br>' +
-			'<br>' +
-			'<b>Length<br></b>' +
-			'length: ' + values.length + '<br>' +
-			'lengthMin: ' + values.lengthMin + '<br>' +
-			'lengthMax: ' + values.lengthMax + '<br>' +
-			//			'lengthRange(): ' + lengthRange + '<br>' +
-			'<br>' +
-			'<b>Width</b><br>' +
-			'width: ' + values.width + '<br>' +
-			'widthMin: ' + values.widthMin + '<br>' +
-			'widthMax: ' + values.widthMax + '<br>' +
-			'<b>thickness:'+thickness+'</b><br>' +
-			//			'widthRange(): ' + widthRange + '<br>' +
-			'<br>' +
+		'<b>thickness:'+thickness+'</b><br>' +
 		'';
 
 		const pathFunctions = [ getPathBox, getPathL, getPathT , getPathH ];
 
-		//		theBuilding.storeys = parseInt( inpFloors.value, 10 );
-		theBuilding.storeyHeight = parseInt( inpHeight.value, 10 );
+		// Leave out the building height for now
+		// theBuilding.storeyHeight = parseInt( inpHeight.value, 10 );
 		theBuilding.orientation = parseInt( inpOrientation.value, 10 );
+		// Set Perimeter Depth
 		theBuilding.perimeterDepth = parseInt( inpPerimeterDepth.value, 10 );
-		inpLength.min = 2 * theBuilding.perimeterDepth + 4;
-		inpWidth.min = 2 * theBuilding.perimeterDepth + 4;
 
 		const rotation = - d2r * theBuilding.orientation;
+		// set the number of floors to the building
+		theBuilding.storeys = numFloors
 		const storeys = theBuilding.storeys;
 		const height = theBuilding.storeyHeight;
 
@@ -598,11 +586,10 @@ const userChange =
 
 		}
 
-		theBuilding.section = updateSection();
+		theBuilding.section = updateSection(values);
 
 		const pathFunction = pathFunctions[ selShape.selectedIndex ];
 		theBuilding.path = pathFunction(values);
-		console.log(theBuilding.path)
 
 		theBuilding.shape = selShape[ selShape.selectedIndex ].innerText;
 
@@ -633,8 +620,9 @@ const userChange =
 
 	}
 
-	function updateSection() {
+	function updateSection(values) {
 
+		// For now do not do core perimeter zoning
 		const width = theBuilding.perimeterDepth;
 		const height = theBuilding.storeyHeight;
 		//console.log( 'width', width );
@@ -646,7 +634,6 @@ const userChange =
 		];
 
 		return section;
-
 	}
 
 
@@ -821,14 +808,14 @@ const userChange =
 
 				if ( storey === 0 ) {
 
-//					placard = drawPlacard( ['space ' + ( i + 1 ), 'angle ' + ( - r2d * angle + 90 ) ], 0.1, 120, open.position.x, open.position.y, 40 );
+					//					placard = drawPlacard( ['space ' + ( i + 1 ), 'angle ' + ( - r2d * angle + 90 ) ], 0.1, 120, open.position.x, open.position.y, 40 );
 					placard = drawPlacard( 'angle ' + ( - r2d * angle + 90 ), 0.1, 120, open.position.x, open.position.y, 40 );
 
 					mesh.add( placard );
 
 				}
 
-// needed for export?
+				// needed for export?
 				shapePoints.push( pt2 );
 
 			}
@@ -842,7 +829,7 @@ const userChange =
 		shapeMesh.name = storey === 0 ? 'SlabOnGrade' : 'InteriorFloor';
 		mesh.add( shapeMesh );
 
-//console.log( 'theBuilding.storeys', storey, theBuilding.storeys  );
+		//console.log( 'theBuilding.storeys', storey, theBuilding.storeys  );
 
 		if ( storey === theBuilding.storeys - 1 ) {
 
@@ -857,7 +844,7 @@ const userChange =
 
 		mesh.geometry.computeFaceNormals();
 		mesh.geometry.computeVertexNormals();
-//		mesh.geometry.center();
+		//		mesh.geometry.center();
 		geometry.applyMatrix( new THREE.Matrix4().makeTranslation( -len05, -wid05, 0 ) );
 
 		return mesh;
@@ -868,7 +855,7 @@ const userChange =
 
 	function offset( obj, points, offsetX, offsetY ) {
 
-// 2016-02-10
+		// 2016-02-10
 		offsetX = -offsetX;
 		var offsetY = offsetY ? offsetY : 0;
 		var pt1, pt2, offsetPt1, offsetPt2, vector, angle;
@@ -891,14 +878,14 @@ const userChange =
 			line = new THREE.Line3( offsetPt1, offsetPt2 );
 			lines.push( line );
 
-/* debug
-			const geometry = new THREE.Geometry();
-			geometry.vertices = [ offsetPt1, offsetPt2 ];
-			const material = new THREE.LineBasicMaterial( { color: 'magenta' } );
-			const line = new THREE.Line( geometry, material );
-			line.position.y = -5;
-			obj.add( line );
-*/
+			/* debug
+						const geometry = new THREE.Geometry();
+						geometry.vertices = [ offsetPt1, offsetPt2 ];
+						const material = new THREE.LineBasicMaterial( { color: 'magenta' } );
+						const line = new THREE.Line( geometry, material );
+						line.position.y = -5;
+						obj.add( line );
+			*/
 
 		}
 
@@ -933,7 +920,7 @@ const userChange =
 
 		}
 
-// debug
+		// debug
 		const geometryLine = new THREE.Geometry();
 		geometryLine.vertices = vertices;
 		const materialLine = new THREE.LineBasicMaterial( { color: 'yellow' } );
@@ -949,8 +936,8 @@ const userChange =
 
 	function intersectionTwoLines2( line1, line2 ) {
 
-// 2016-02-10
-// Thanks to http://jsfiddle.net/justin_c_rounds/Gd2S2/ && http://jsfiddle.net/user/justin_c_rounds/fiddles/
+		// 2016-02-10
+		// Thanks to http://jsfiddle.net/justin_c_rounds/Gd2S2/ && http://jsfiddle.net/user/justin_c_rounds/fiddles/
 
 		const ptA = line1.start;
 		const ptB = line1.end;

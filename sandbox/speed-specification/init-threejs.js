@@ -7,17 +7,16 @@
 	let gridHelper, axesHelper;
 
 
-
 	function initThreejs() {
 
-		const width = 300;
-		const height = 300;
+		const width = 400;
+		const height = 400;
 
 		renderer = new THREE.WebGLRenderer( { alpha: 1, antialias: true }  );
 		renderer.setClearColor( 0xffffff, 1 );
 		renderer.setSize( width, height );
-//		renderer.shadowMap.enabled = true;
-//		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+		//		renderer.shadowMap.enabled = true;
+		//		renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		context1 = canvasPerspective.getContext( '2d' );
 		context2 = canvasOrtho.getContext( '2d' );
@@ -44,7 +43,7 @@
 		const size = 150
 		lightDirectional = new THREE.DirectionalLight( 0xaaaaaa );
 		lightDirectional.position.set( -size, size, size );
-//		lightDirectional.shadow.camera.scale.set( 13, 15, 0.5 );
+			//		lightDirectional.shadow.camera.scale.set( 13, 15, 0.5 );
 		lightDirectional.shadow.mapSize.width = 2048;  // default 512
 		lightDirectional.shadow.mapSize.height = 2048;
 		lightDirectional.castShadow = true;
@@ -74,7 +73,7 @@
 
 	function drawPlacard( text, scale, color, x, y, z ) {
 
-// 2016-02-27 ~ https://github.com/jaanga/jaanga.github.io/tree/master/cookbook-threejs/examples/placards
+		// 2016-02-27 ~ https://github.com/jaanga/jaanga.github.io/tree/master/cookbook-threejs/examples/placards
 
 		var placard = new THREE.Object3D();
 		var v = function( x, y, z ){ return new THREE.Vector3( x, y, z ); };
