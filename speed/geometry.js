@@ -895,7 +895,6 @@ const userChange =
 
 		}
 
-
 		if ( points[ 0 ].distanceTo( points[ points.length - 1 ] ) < 0.01 ) {
 
 			pt1 = intersectionTwoLines2( lines[ 0 ], lines [ lines.length - 1 ] );
@@ -907,7 +906,7 @@ const userChange =
 			pt2 = lines[ lines.length - 1 ].end;
 
 		}
-
+		console.log(pt1)
 		vertices = [ v( pt1.x, pt1.y, offsetY ) ];
 
 		for ( var i = 0; i < lines.length; i++ ) {
